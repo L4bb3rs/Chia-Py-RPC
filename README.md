@@ -8,9 +8,8 @@ Chia-Py-RPC is a Python library that provides a convenient way to interact with 
 - Check wallet balances and transaction history
 - Get information about Chia blocks, coins, and transactions
 - Create and manage Chia wallets
-- Decode Chia addresses
-- Support for Chia's bech32m address format
-- Simple and easy-to-use API
+- Simple and easy-to-use
+- Plus every RPC method avaliable in Chia Client 1.7.0 or previous.
 
 ## Installation
 
