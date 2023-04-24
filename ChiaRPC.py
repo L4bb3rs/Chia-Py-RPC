@@ -1947,6 +1947,96 @@ class DataLayerWallet:
         self.cert = cert
         self.chia_rpc = ChiaRPC(url, cert)
 
+    def create_new_dl(self, root: str, fee: int) -> dict:
+        """
+        Initializes the DataLayer Wallet using the Chia API.
+
+        Args:
+            root (str): The root directory of the DataLayer Wallet.
+            fee (int): The fee to set for the DataLayer Wallet.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {"root": root, "fee": fee}
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit("create_new_dl", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def dl_delete_mirror(self, coin_id: str, fee: int) -> dict:
+        """
+        Removes an existing mirror for a specific singleton using the Chia API.
+
+        Args:
+            coin_id (str): The coin ID of the mirror to be removed.
+            fee (int): The fee associated with the removal.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {"coin_id": coin_id, "fee": fee}
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit("dl_delete_mirror", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def dl_get_mirrors(self, launcher_id: str) -> dict:
+        """
+        Retrieves all the mirrors for a specific singleton using the Chia API.
+
+        Args:
+            launcher_id (str): The launcher ID of the singleton to retrieve mirrors for.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {"launcher_id": launcher_id}
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit("dl_get_mirrors", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def dl_history(self, launcher_id: str, min_generation: int,
+                   max_generation: int, num_results: int) -> dict:
+        """
+        Retrieves the singleton record for the latest singleton of a launcher ID using the Chia API.
+
+        Args:
+            launcher_id (str): The launcher ID for which to retrieve the singleton history.
+            min_generation (int): The minimum generation to retrieve.
+            max_generation (int): The maximum generation to retrieve.
+            num_results (int): The number of results to retrieve.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "launcher_id": launcher_id,
+            "min_generation": min_generation,
+            "max_generation": max_generation,
+            "num_results": num_results}
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit("dl_history", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
 
 class NFTWallet:
     # TODO Complete Functions
@@ -1957,8 +2047,37 @@ class NFTWallet:
 
 
 class Coins:
-    # TODO Complete Functions
     def __init__(self, url=None, cert=None):
         self.url = url
         self.cert = cert
         self.chia_rpc = ChiaRPC(url, cert)
+
+    def get_coin_records_by_names(
+            self, names: list, start_height: int, end_height: int, include_spent_coins: bool) -> dict:
+        """
+        Retrieves the coins for given coin IDs using the Chia API.
+
+        Args:
+            names (list): A list of coin IDs to retrieve.
+            start_height (int): The start height for coin retrieval.
+            end_height (int): The end height for coin retrieval.
+            include_spent_coins (bool): A boolean flag indicating whether to include spent coins in the results.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "names": names,
+            "start_height": start_height,
+            "end_height": end_height,
+            "include_spent_coins": include_spent_coins}
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit(
+            "get_coin_records_by_names",
+            json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
