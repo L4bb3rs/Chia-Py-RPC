@@ -3,7 +3,7 @@ import json
 import requests
 import urllib3
 
-from typing import Optional, Tuple, Dict, Union
+from typing import Optional, Tuple, Dict, Union, List
 
 
 class ChiaRPC:
@@ -1115,7 +1115,6 @@ class KeyManagement:
 
 
 class PoolWallet:
-    # TODO Complete Functions
     def __init__(self, url=None, cert=None):
         self.url = url
         self.cert = cert
@@ -1224,11 +1223,134 @@ class PoolWallet:
 
 
 class Notifications:
-    # TODO Complete Functions
     def __init__(self, url=None, cert=None):
         self.url = url
         self.cert = cert
         self.chia_rpc = ChiaRPC(url, cert)
+        
+    def delete_notifications(self, ids: list) -> dict:
+        """
+        Deletes notifications.
+
+        Args:
+            ids (list): A list of notification IDs to be deleted.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "ids": ids
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia RPC call with the payload
+        result = self.chia_rpc.submit("delete_notifications", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+    
+        
+    def get_notifications(self, ids: list, start: int, end: int) -> dict:
+        """
+        Retrieves notifications.
+
+        Args:
+            ids (list): A list of notification IDs to be retrieved.
+            start (int): The starting index of the notifications to retrieve.
+            end (int): The ending index of the notifications to retrieve.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "ids": ids,
+            "start": start,
+            "end": end
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia RPC call with the payload
+        result = self.chia_rpc.submit("get_notifications", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+    
+    def send_notification(self, target: str, message: str, amount: int, fee: int) -> dict:
+        """
+        Sends a notification.
+
+        Args:
+            target (str): The target of the notification.
+            message (str): The message of the notification.
+            amount (int): The amount associated with the notification.
+            fee (int): The fee to be paid for the notification.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "target": target,
+            "message": message,
+            "amount": amount,
+            "fee": fee
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia RPC call with the payload
+        result = self.chia_rpc.submit("send_notification", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+    
+    def sign_message_by_address(self, address: str, message: str, is_hex: bool = False) -> dict:
+        """
+        Given a derived P2 address, sign the message by its private key.
+
+        Args:
+            address (str): The derived P2 address.
+            message (str): The message to be signed.
+            is_hex (bool, optional): Flag indicating if the message is in hexadecimal format. Defaults to False.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "address": address,
+            "message": message,
+            "is_hex": is_hex
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia RPC call with the payload
+        result = self.chia_rpc.submit("sign_message_by_address", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+    
+    def sign_message_by_id(self, id: str, message: str, is_hex: bool = False) -> dict:
+        """
+        Given a NFT/DID ID, sign the message by the P2 private key.
+
+        Args:
+            id (str): The NFT/DID ID.
+            message (str): The message to be signed.
+            is_hex (bool, optional): Flag indicating if the message is in hexadecimal format. Defaults to False.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "id": id,
+            "message": message,
+            "is_hex": is_hex
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia RPC call with the payload
+        result = self.chia_rpc.submit("sign_message_by_id", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
 
 
 class Wallet:
@@ -1614,11 +1736,65 @@ class Wallet:
 
 
 class WalletManagement:
-    # TODO Complete Functions
     def __init__(self, url=None, cert=None):
         self.url = url
         self.cert = cert
         self.chia_rpc = ChiaRPC(url, cert)
+
+    def create_new_wallet(self, wallet_type: str, name: str, amount: float, fee: float, mode: str = "new", asset_id: str = None) -> dict:
+        """
+        Creates a new wallet.
+
+        Args:
+            wallet_type (str): The type of wallet to be created.
+            name (str): The name of the new wallet.
+            amount (float): The initial amount to be assigned to the new wallet.
+            fee (float): The fee to be paid for creating the new wallet.
+            mode (str, optional): The mode for creating the new wallet. Defaults to "new".
+            asset_id (str, optional): The asset ID for creating the new wallet. Defaults to None.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "wallet_type": wallet_type,
+            "name": name,
+            "amount": amount,
+            "fee": fee,
+            "mode": mode,
+            "asset_id": asset_id
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia RPC call with the payload
+        result = self.chia_rpc.submit("create_new_wallet", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+    
+    
+    def get_wallets(self, wallet_type: int = 0, include_data: bool = True) -> dict:
+        """
+        Retrieves all of the wallets on the node.
+
+        Args:
+            wallet_type (int, optional): The type of wallets to retrieve. Defaults to 0.
+            include_data (bool, optional): Whether to include wallet data in the response. Defaults to True.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "type": wallet_type,
+            "include_data": include_data
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia RPC call with the payload
+        result = self.chia_rpc.submit("get_wallets", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
 
 
 class WalletNode:
