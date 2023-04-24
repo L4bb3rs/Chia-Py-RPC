@@ -3,7 +3,7 @@ import json
 import requests
 import urllib3
 
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict, Union
 
 
 class ChiaRPC:
@@ -904,11 +904,214 @@ class DidWallet:
 
 
 class KeyManagement:
-    # TODO Complete Functions
-    def __init__(self, url=None, cert=None):
+    def __init__(self, url: str = None, cert: str = None) -> None:
         self.url = url
         self.cert = cert
         self.chia_rpc = ChiaRPC(url, cert)
+
+    def add_key(self, mnemonic: List[str]) -> Dict[str, Union[str, int]]:
+        """
+        Adds a new key to the wallet using the provided mnemonic phrase.
+
+        Args:
+            mnemonic (list): A list of words representing the mnemonic phrase.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Construct the request payload
+        payload = {
+            'mnemonic': mnemonic
+        }
+
+        # Use the submit method of ChiaRPC instance to make the Chia RPC call
+        result = self.chia_rpc.submit("add_key", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def check_delete_key(
+            self, fingerprint: int) -> Dict[str, Union[str, bool]]:
+        """
+        Determines if it is safe to delete a private key.
+
+        Args:
+            fingerprint (int): The fingerprint of the private key to check.
+
+        Returns:
+            dict: A dictionary containing the result of the operation, including whether
+                the key is used for farming, pooling, or has a balance.
+        """
+        # Construct the request payload
+        payload = {
+            'fingerprint': fingerprint
+        }
+
+        # Use the submit method of ChiaRPC instance to make the Chia RPC call
+        result = self.chia_rpc.submit("check_delete_key", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def wallet_delete_all_keys(self) -> Dict[str, str]:
+        """
+        Deletes all keys from the keychain.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Construct the request payload
+        payload = {}
+
+        # Use the submit method of ChiaRPC instance to make the Chia RPC call
+        result = self.chia_rpc.submit(
+            "wallet_delete_all_keys",
+            json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def delete_key(self, fingerprint: int) -> Dict[str, Union[str, int]]:
+        """
+        Deletes all keys which have the given public key fingerprint.
+
+        Args:
+            fingerprint (int): The fingerprint of the public key to be deleted.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Construct the request payload
+        payload = {
+            'fingerprint': fingerprint
+        }
+
+        # Use the submit method of ChiaRPC instance to make the Chia RPC call
+        result = self.chia_rpc.submit("delete_key", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def generate_mnemonic(self) -> Dict[str, str]:
+        """
+        Generates a new mnemonic phrase.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Use the submit method of ChiaRPC instance to make the Chia RPC call
+        result = self.chia_rpc.submit("generate_mnemonic", "{}")
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def get_logged_in_fingerprint(self) -> dict:
+        """
+        Retrieves the logged in fingerprint.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {}
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit("get_logged_in_fingerprint", payload)
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def get_private_key(self, fingerprint: int) -> Dict[str, Union[str, int]]:
+        """
+        Retrieves the private key by fingerprint.
+
+        Args:
+            fingerprint (int): The fingerprint of the private key to retrieve.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Construct the request payload
+        payload = {
+            'fingerprint': fingerprint
+        }
+
+        # Use the submit method of ChiaRPC instance to make the Chia RPC call
+        result = self.chia_rpc.submit("get_private_key", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def get_public_keys(self) -> dict:
+        """
+        Retrieves all public keys on the node.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Construct the request payload
+        payload = {}
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call
+        result = self.chia_rpc.submit("get_public_keys", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def log_in(self, fingerprint: int) -> dict:
+        """
+        Logs in the wallet with a specific key.
+
+        Args:
+            fingerprint (int): The fingerprint of the key to use for logging in.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Construct the request payload
+        payload = {
+            'fingerprint': fingerprint
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call
+        result = self.chia_rpc.submit("log_in", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def verify_signature(self, pubkey: str, message: str,
+                         signature: str, address: str, signing_mode: str) -> dict:
+        """
+        Verifies if a signature is valid with the given public key, message, signature, address, and signing mode.
+
+        Args:
+            pubkey (str): The public key to use for verification.
+            message (str): The message to verify the signature against.
+            signature (str): The signature to verify.
+            address (str): The address associated with the public key.
+            signing_mode (str): The signing mode to use for verification.
+
+        Returns:
+            dict: A dictionary containing the result of the signature verification operation.
+        """
+        # Construct the request payload
+        payload = {
+            'pubkey': pubkey,
+            'message': message,
+            'signature': signature,
+            'address': address,
+            'signing_mode': signing_mode
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call
+        result = self.chia_rpc.submit("verify_signature", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
 
 
 class PoolWallet:
@@ -917,6 +1120,107 @@ class PoolWallet:
         self.url = url
         self.cert = cert
         self.chia_rpc = ChiaRPC(url, cert)
+
+    def pw_absorb_rewards(self, wallet_id: int, fee: int) -> dict:
+        """
+        Perform a sweep of the p2_singleton rewards controlled by the pool wallet singleton.
+
+        Args:
+            wallet_id (int): Wallet ID of the pool wallet.
+            fee (int): Fee to be paid for the sweep.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "wallet_id": wallet_id,
+            "fee": fee
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit("pw_absorb_rewards", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def pw_join_pool(self, wallet_id: int, target_puzzlehash: str,
+                     pool_url: str, relative_lock_height: int, fee: int) -> dict:
+        """
+        Joins the given wallet to a pool.
+
+        Args:
+            wallet_id (int): Wallet ID of the pool wallet.
+            target_puzzlehash (str): Target puzzlehash of the pool.
+            pool_url (str): URL of the pool to join.
+            relative_lock_height (int): Relative lock height for the join transaction.
+            fee (int): Fee to be paid for the join transaction.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "wallet_id": wallet_id,
+            "target_puzzlehash": target_puzzlehash,
+            "pool_url": pool_url,
+            "relative_lock_height": relative_lock_height,
+            "fee": fee
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit("pw_join_pool", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def pw_self_pool(self, wallet_id: int, fee: int) -> dict:
+        """
+        Removes the given wallet from a pool.
+
+        Args:
+            wallet_id (int): Wallet ID of the pool wallet.
+            fee (int): Fee to be paid for the pool removal transaction.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "wallet_id": wallet_id,
+            "fee": fee
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit("pw_self_pool", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
+    def pw_status(self, wallet_id: int) -> dict:
+        """
+        Returns the complete state of the given Pool wallet.
+
+        Args:
+            wallet_id (int): Wallet ID of the pool wallet.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "wallet_id": wallet_id
+        }
+
+        # Use the submit method of WalletRpcClient instance to make the Chia
+        # RPC call with the payload
+        result = self.chia_rpc.submit("pw_status", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
 
 
 class Notifications:
