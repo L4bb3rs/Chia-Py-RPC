@@ -2098,6 +2098,39 @@ class NFTWallet:
         self.__cert__ = cert
         self.__chia_rpc__ = WalletRPC(url, cert)
 
+    def nft_add_uri(self, wallet_id: int, uri: str, key: str,
+                    nft_coin_id: str, fee: int, reuse_puzhash: bool) -> dict:
+        """
+        Adds a URI to an NFT using the Chia API.
+
+        Args:
+            wallet_id (int): The ID of the wallet to use.
+            uri (str): The URI to add.
+            key (str): The key to add.
+            nft_coin_id (str): The ID of the NFT coin.
+            fee (int): The fee to set.
+            reuse_puzhash (bool): Whether to reuse the puzhash or not.
+
+        Returns:
+            dict: A dictionary containing the result of the operation.
+        """
+        # Define the payload for the RPC call
+        payload = {
+            "wallet_id": wallet_id,
+            "uri": uri,
+            "key": key,
+            "nft_coin_id": nft_coin_id,
+            "fee": fee,
+            "reuse_puzhash": reuse_puzhash
+        }
+
+        # Use the submit method of WalletRPCConnect instance to make the Chia
+        # RPC call with the payload
+        result = self.__chia_rpc__.submit("nft_add_uri", json.dumps(payload))
+
+        # Parse the JSON response and return the result
+        return json.loads(result)
+
 
 class Coins:
     def __init__(self, url: str = None, cert: str = None):
