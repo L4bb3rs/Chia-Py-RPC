@@ -35,8 +35,9 @@ class WalletRPCConnect:
                 str: JSON response as a string with indentation and sorted keys.
     """
 
+
     def __init__(self, url: Optional[str] = None,
-                 cert: Optional[Tuple[str, str]] = None):
+                cert: Optional[Tuple[str, str]] = None):
         """
         Initialize ChiaRPC instance with the provided URL and certificate.
 
@@ -47,15 +48,16 @@ class WalletRPCConnect:
         default_url = "https://localhost:9256/"
         default_cert = (
             os.path.expanduser(
-                '~\\.chia\\mainnet\\config\\ssl\\full_node\\private_full_node.crt'),
+                '~/.chia/mainnet/config/ssl/full_node/private_full_node.crt'),
             os.path.expanduser(
-                '~\\.chia\\mainnet\\config\\ssl\\full_node\\private_full_node.key')
+                '~/.chia/mainnet/config/ssl/full_node/private_full_node.key')
         )
 
         self.url = url or default_url
         self.cert = cert or default_cert
         self.headers = {"Content-Type": "application/json"}
         urllib3.disable_warnings()
+
 
     def submit(self, chia_call: str, data: str):
         """
