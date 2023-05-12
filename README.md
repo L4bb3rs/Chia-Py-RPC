@@ -23,7 +23,7 @@ pip install chia-py-rpc
 Here's an example of how you can use Chia-Py-RPC to send transactions to multiple recipients in a single transaction:
 
 ```
-from chia_py_rpc import Wallet
+from chia_py_rpc.wallet import Wallet
 
 # Create an instance of Wallet
 chia_wallet = Wallet()
@@ -49,7 +49,7 @@ print(f"Transaction ID: {transaction_id}")
 print(f"Status: {status}")
 ```
 
-For more examples and documentation, please refer to the official documentation (TBC).
+For more examples and documentation, please refer to the official documentation.
 
 ## Contributing
 If you would like to contribute to Chia-Py-RPC, please open an issue or submit a pull request on GitHub. We welcome any contributions, including bug fixes, feature enhancements, and documentation improvements.

@@ -1,2 +1,1 @@
-from .rpc_connect import WalletRPCConnect
-from .wallet import *
+__all__ = ["wallet", "rpc_connect"]
