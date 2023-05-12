@@ -2130,6 +2130,9 @@ class NFTWallet:
 
         # Parse the JSON response and return the result
         return json.loads(result)
+    
+    
+    
 
 
 class Coins:

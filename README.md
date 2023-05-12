@@ -16,17 +16,17 @@ Chia-Py-RPC is a Python library that provides a convenient way to interact with 
 To install Chia-Py-RPC, you can use `pip`, the Python package manager. Open a terminal and run the following command:
 
 ```bash
-pip install chia-py-rpc (Not yet released)
+pip install chia-py-rpc
 ```
 
 ## Usage
 Here's an example of how you can use Chia-Py-RPC to send transactions to multiple recipients in a single transaction:
 
 ```
-from chia_py_rpc import ChiaWallet
+from chia_py_rpc import Wallet
 
-# Create an instance of ChiaWallet
-chia_wallet = ChiaWallet()
+# Create an instance of Wallet
+chia_wallet = Wallet()
 
 # Specify the wallet ID, additions (recipients), fee, and optional parameters
 wallet_id = 1
