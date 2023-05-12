@@ -1,5 +1,5 @@
 import json
-from rpc_connect import WalletRPCConnect as WalletRPC
+from chia_py_rpc.rpc_connect import WalletRPCConnect as WalletRPC
 from typing import Dict, Union, List
 
 
