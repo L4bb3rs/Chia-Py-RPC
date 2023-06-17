@@ -417,8 +417,8 @@ class CatWallet:
         result = self.__chia_rpc__.submit("select_coins", json.dumps(data))
         return json.loads(result)
 
-    def take_offer(self, offer, fee, min_coin_amount,
-                   max_coin_amount=None, solver=None, reuse_puzhash=True):
+    def take_offer(self, offer, fee, min_coin_amount=0,
+                   max_coin_amount=0, solver=None, reuse_puzhash=True):
         """Takes an offer in CAT Wallet using RPC.
 
         Args:
@@ -2130,9 +2130,9 @@ class NFTWallet:
 
         # Parse the JSON response and return the result
         return json.loads(result)
-    
-    
-    
+
+
+
 
 
 class Coins:
