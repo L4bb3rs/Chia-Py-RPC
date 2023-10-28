@@ -1023,7 +1023,7 @@ class KeyManagement:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit("get_logged_in_fingerprint", payload)
+        result = self.__chia_rpc__.submit("get_logged_in_fingerprint", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
