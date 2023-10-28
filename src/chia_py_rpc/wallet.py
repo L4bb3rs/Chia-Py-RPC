@@ -6,17 +6,18 @@ from typing import Dict, Union, List
 class SharedMethods:
     """Methods shared by all services."""
 
-    def __init__(self, url: str = None, cert: str = None):
+    def __init__(self, url: str = None, cert: str = None, disable_warnings: bool = False):
         """
         Initialize SharedMethods instance.
 
         Args:
-            __url (str, optional): __URL for ChiaRPC. Defaults to https://localhost:9256/ unless specified.
-            __cert (str, optional): __Certificate for ChiaRPC. Default Ceritificates unless specified.
+            url (str, optional): URL for ChiaRPC. Defaults to https://localhost:9256/ unless specified.
+            cert (str, optional): Certificate for ChiaRPC. Default Certificates unless specified.
+            disable_warnings (bool, optional): Disable SSL warnings. Defaults to False.
         """
         self.__url__ = url
         self.__cert__ = cert
-        self.__chia_rpc__ = WalletRPC(url, cert)
+        self.__chia_rpc__ = WalletRPC(url, cert, disable_warnings) 
 
     def close_connection(self, node_id: str) -> dict:
         """
@@ -154,7 +155,7 @@ class CatWallet:
         self.__cert__ = cert
         self.__chia_rpc__ = WalletRPC(url, cert)
 
-    def cancel_offers(self, batch_fee: int = 0, secure: bool = True,
+    def cancel_offers(self, batch_fee: int = 1, secure: bool = True,
                       batch_size: int = 5, cancel_all: bool = False, asset_id: str = "xch") -> dict:
         """
         Cancel offers category.
@@ -172,7 +173,7 @@ class CatWallet:
         data = {
             "batch_fee": batch_fee,
             "secure": secure,
-            "batch_size": batch_size,
+            "batch_size": int(batch_size),
             "cancel_all": cancel_all,
             "asset_id": asset_id.lower()
         }
@@ -279,42 +280,57 @@ class CatWallet:
             "check_offer_validity", json.dumps(data))
         return json.loads(result)
 
-    def create_offer_for_ids(self, offer, fee, validate_only, driver_dict,
-                             min_coin_amount, max_coin_amount, solver, reuse_puzhash):
+    def create_offer_for_ids(self, offer, fee=None, validate_only=None, driver_dict=None,
+                            min_coin_amount=None, max_coin_amount=None, solver=None, reuse_puzhash=None,
+                            min_height=None, min_time=None, max_height=None, max_time=None):
         """
         Create an offer for a given set of wallet id and amount pairs in CAT Wallet
 
         Args:
             offer (dict): Offer dictionary
-            fee (int): Fee amount
-            validate_only (bool): Whether to only validate the offer or not
-            driver_dict (dict): Driver dictionary
-            min_coin_amount (int): Minimum coin amount
-            max_coin_amount (int): Maximum coin amount
-            solver (dict): Solver dictionary
-            reuse_puzhash (bool): Whether to reuse the puzzle hash or not
+            fee (int, optional): Fee amount. Default is 0.
+            validate_only (bool, optional): Whether to only validate the offer or not. Default is False.
+            driver_dict (dict, optional): Driver dictionary. Default is None.
+            min_coin_amount (int, optional): Minimum coin amount. Default is 0.
+            max_coin_amount (int, optional): Maximum coin amount. Default is 0.
+            solver (dict, optional): Solver dictionary. Default is None.
+            reuse_puzhash (bool, optional): Whether to reuse the puzzle hash or not. Default is False.
+            min_height (int, optional): Minimum block height. Default is None.
+            min_time (int, optional): Minimum UNIX timestamp. Default is None.
+            max_height (int, optional): Maximum block height. Default is None.
+            max_time (int, optional): Maximum UNIX timestamp. Default is None.
 
         Returns:
             dict: Response from the RPC
         """
         data = {
             "offer": offer,
+        }
+
+        optional_fields = {
             "fee": fee,
             "validate_only": validate_only,
             "driver_dict": driver_dict,
             "min_coin_amount": min_coin_amount,
             "max_coin_amount": max_coin_amount,
             "solver": solver,
-            "reuse_puzhash": reuse_puzhash
+            "reuse_puzhash": reuse_puzhash,
+            "min_height": min_height,
+            "min_time": min_time,
+            "max_height": max_height,
+            "max_time": max_time
         }
-        result = self.__chia_rpc__.submit(
-            "create_offer_for_ids", json.dumps(data))
+
+        for key, value in optional_fields.items():
+            if value is not None:
+                data[key] = value
+
+        result = self.__chia_rpc__.submit("create_offer_for_ids", json.dumps(data))
         return json.loads(result)
 
-    def get_all_offers(self, start, end, exclude_my_offers, exclude_taken_offers,
-                       include_completed, sort_key, reverse, file_contents):
+    def get_all_offers(self, start=0, end=10, exclude_my_offers=False, exclude_taken_offers=True,
+                    include_completed=True, reverse=False, file_contents=True, sort_key=None):
         """
-    def cat_get_all_offers(self, start, end, exclude_my_offers, exclude_taken_offers, include_completed, sort_key, reverse, file_contents):
 
         Args:
             start (int): Start index for offers
@@ -322,7 +338,7 @@ class CatWallet:
             exclude_my_offers (bool): Whether to exclude the user's own offers or not
             exclude_taken_offers (bool): Whether to exclude taken offers or not
             include_completed (bool): Whether to include completed offers or not
-            sort_key (str): Sort key for offers
+            sort_key (str, optional): Sort key for offers. If None, it's excluded from the call.
             reverse (bool): Whether to sort in reverse order or not
             file_contents (bool): Whether to include file contents or not
 
@@ -335,10 +351,13 @@ class CatWallet:
             "exclude_my_offers": exclude_my_offers,
             "exclude_taken_offers": exclude_taken_offers,
             "include_completed": include_completed,
-            "sort_key": sort_key,
             "reverse": reverse,
             "file_contents": file_contents
         }
+
+        if sort_key is not None:
+            data["sort_key"] = sort_key
+
         result = self.__chia_rpc__.submit("get_all_offers", json.dumps(data))
         return json.loads(result)
 
@@ -1613,8 +1632,6 @@ class Wallet:
     def get_transaction_memo(self, transaction_id):
         """
         Get the memo of a specific transaction.
-
-        Args:
             transaction_id (str): ID of the transaction to retrieve memo for.
 
         Returns:
