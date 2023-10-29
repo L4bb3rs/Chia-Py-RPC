@@ -17,7 +17,7 @@ class SharedMethods:
         """
         self.__url__ = url
         self.__cert__ = cert
-        self.__chia_rpc__ = WalletRPC(url, cert, disable_warnings) 
+        self.__chia_rpc__ = WalletRPC(url, cert, disable_warnings)
 
     def close_connection(self, node_id: str) -> dict:
         """
@@ -31,14 +31,13 @@ class SharedMethods:
         """
         # Construct the request payload
         try:
-            payload = {'node_id': node_id}
+            payload = {"node_id": node_id}
             result = self.__chia_rpc__.submit("close_connection", json.dumps(payload))
-            
+
             # Parse the JSON response and return the result
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
-
+            return {"error": str(e)}
 
     def get_connections(self) -> dict:
         """
@@ -57,7 +56,7 @@ class SharedMethods:
             # Parse the JSON response and return the result
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     def get_routes(self) -> dict:
         """
@@ -76,8 +75,7 @@ class SharedMethods:
             # Parse the JSON response and return the result
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
-
+            return {"error": str(e)}
 
         def check_healthz(self) -> dict:
             """
@@ -96,8 +94,7 @@ class SharedMethods:
                 # Parse the JSON response and return it
                 return json.loads(result)
             except Exception as e:
-                return {'error': str(e)}
-
+                return {"error": str(e)}
 
     def open_connection(self, ip: str, port: int) -> dict:
         """
@@ -112,10 +109,7 @@ class SharedMethods:
         """
         try:
             # Prepare the payload as a dictionary
-            payload = {
-                "ip": ip,
-                "port": port
-            }
+            payload = {"ip": ip, "port": port}
 
             # Use the submit method of ChiaRPC instance to make the Chia RPC call
             result = self.__chia_rpc__.submit("open_connection", json.dumps(payload))
@@ -123,9 +117,8 @@ class SharedMethods:
             # Parse the JSON response and return it
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
-    
-    
+            return {"error": str(e)}
+
     def stop_node(self) -> dict:
         """
         Stop the Chia node.
@@ -143,12 +136,10 @@ class SharedMethods:
             # Parse the JSON response and return it
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
 
 class CatWallet:
-    # TODO Type Hints Doc Strings
-
     """CATs, trades, and offers."""
 
     def __init__(self, url: str = None, cert: str = None):
@@ -166,8 +157,14 @@ class CatWallet:
         except Exception as e:
             print(f"Initialization error: {str(e)}")
 
-    def cancel_offers(self, secure: bool, batch_fee: int = 0, batch_size: int = 5,
-                    cancel_all: bool = False, asset_id: str = "xch") -> dict:
+    def cancel_offers(
+        self,
+        secure: bool,
+        batch_fee: int = 0,
+        batch_size: int = 5,
+        cancel_all: bool = False,
+        asset_id: str = "xch",
+    ) -> dict:
         """
         Cancel offers category.
 
@@ -193,8 +190,7 @@ class CatWallet:
             result = self.__chia_rpc__.submit("cancel_offers", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
-        
+            return {"error": str(e)}
 
     def cat_asset_id_to_name(self, asset_id: str) -> dict:
         """
@@ -212,7 +208,7 @@ class CatWallet:
             result = self.__chia_rpc__.submit("cat_asset_id_to_name", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     def cancel_offer(self, secure: bool, trade_id: str, fee: int = None) -> dict:
         """
@@ -238,8 +234,7 @@ class CatWallet:
             result = self.__chia_rpc__.submit("cancel_offer", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
-
+            return {"error": str(e)}
 
     def cat_get_asset_id(self, wallet_id: int) -> dict:
         """
@@ -256,8 +251,7 @@ class CatWallet:
             result = self.__chia_rpc__.submit("cat_get_asset_id", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
-
+            return {"error": str(e)}
 
     def cat_get_name(self, wallet_id: int) -> dict:
         """
@@ -274,8 +268,7 @@ class CatWallet:
             result = self.__chia_rpc__.submit("cat_get_name", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
-
+            return {"error": str(e)}
 
     def cat_set_name(self, wallet_id: int, name: str) -> dict:
         """
@@ -293,14 +286,22 @@ class CatWallet:
             result = self.__chia_rpc__.submit("cat_set_name", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
-
-    def cat_spend(self, wallet_id: str, inner_address: str, coins: list = None, 
-                amount: int = None, fee: int = None, memos: list = None, 
-                min_coin_amount: int = 0, max_coin_amount: int = 0, 
-                exclude_coin_amounts: list = None, exclude_coin_ids: list = None, 
-                reuse_puzhash: bool = False) -> dict:
+    def cat_spend(
+        self,
+        wallet_id: str,
+        inner_address: str,
+        coins: list = None,
+        amount: int = None,
+        fee: int = None,
+        memos: list = None,
+        min_coin_amount: int = 0,
+        max_coin_amount: int = 0,
+        exclude_coin_amounts: list = None,
+        exclude_coin_ids: list = None,
+        reuse_puzhash: bool = False,
+    ) -> dict:
         """
         Send CAT funds to another wallet.
 
@@ -347,8 +348,7 @@ class CatWallet:
             result = self.__chia_rpc__.submit("cat_spend", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
-
+            return {"error": str(e)}
 
     def check_offer_validity(self, offer: str) -> dict:
         """
@@ -365,15 +365,24 @@ class CatWallet:
             result = self.__chia_rpc__.submit("check_offer_validity", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
 
-def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = None, 
-                         validate_only: bool = False, min_coin_amount: int = None, 
-                         max_coin_amount: int = None, solver: str = None, 
-                         reuse_puzhash: bool = False, min_height: int = None, 
-                         min_time: int = None, max_height: int = None, 
-                         max_time: int = None) -> dict:
+def create_offer_for_ids(
+    self,
+    offer: str,
+    driver_dict: dict = None,
+    fee: int = None,
+    validate_only: bool = False,
+    min_coin_amount: int = None,
+    max_coin_amount: int = None,
+    solver: str = None,
+    reuse_puzhash: bool = False,
+    min_height: int = None,
+    min_time: int = None,
+    max_height: int = None,
+    max_time: int = None,
+) -> dict:
     """
     Create a new offer.
 
@@ -398,10 +407,7 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
         if driver_dict is None:
             driver_dict = {}
 
-        data = {
-            "offer": offer,
-            "driver_dict": driver_dict
-        }
+        data = {"offer": offer, "driver_dict": driver_dict}
 
         optional_fields = {
             "fee": fee,
@@ -413,7 +419,7 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
             "min_height": min_height,
             "min_time": min_time,
             "max_height": max_height,
-            "max_time": max_time
+            "max_time": max_time,
         }
 
         for key, value in optional_fields.items():
@@ -423,13 +429,19 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
         result = self.__chia_rpc__.submit("create_offer_for_ids", json.dumps(data))
         return json.loads(result)
     except Exception as e:
-        return {'error': str(e)}
+        return {"error": str(e)}
 
-
-    def get_all_offers(self, start: Optional[int] = None, end: Optional[int] = None, 
-                    exclude_my_offers: Optional[bool] = None, exclude_taken_offers: Optional[bool] = None, 
-                    include_completed: Optional[bool] = None, reverse: Optional[bool] = None, 
-                    file_contents: Optional[bool] = None, sort_key: Optional[str] = None) -> dict:
+    def get_all_offers(
+        self,
+        start: Optional[int] = None,
+        end: Optional[int] = None,
+        exclude_my_offers: Optional[bool] = None,
+        exclude_taken_offers: Optional[bool] = None,
+        include_completed: Optional[bool] = None,
+        reverse: Optional[bool] = None,
+        file_contents: Optional[bool] = None,
+        sort_key: Optional[str] = None,
+    ) -> dict:
         """
         Show the details of all offers for this wallet.
 
@@ -457,7 +469,7 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
                 "include_completed": include_completed,
                 "reverse": reverse,
                 "file_contents": file_contents,
-                "sort_key": sort_key
+                "sort_key": sort_key,
             }
 
             for key, value in optional_fields.items():
@@ -467,9 +479,7 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
             result = self.__chia_rpc__.submit("get_all_offers", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
-
-
+            return {"error": str(e)}
 
     def get_offer(self, trade_id: str, file_contents: Optional[bool] = True) -> dict:
         """
@@ -487,7 +497,7 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
             result = self.__chia_rpc__.submit("get_offer", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     def get_offer_summary(self, offer: str, advanced: Optional[bool] = False) -> dict:
         """
@@ -505,7 +515,7 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
             result = self.__chia_rpc__.submit("get_offer_summary", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     def get_offers_count(self) -> dict:
         """
@@ -519,7 +529,7 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
             result = self.__chia_rpc__.submit("get_offers_count", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     def get_stray_cats(self) -> dict:
         """
@@ -533,11 +543,17 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
             result = self.__chia_rpc__.submit("get_stray_cats", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
-    def select_coins(self, wallet_id: int, amount: int, min_coin_amount: int,
-                     excluded_coins: Optional[List[Dict]] = None, max_coin_amount: Optional[int] = None,
-                     exclude_coin_amounts: Optional[List[int]] = None) -> dict:
+    def select_coins(
+        self,
+        wallet_id: int,
+        amount: int,
+        min_coin_amount: int,
+        excluded_coins: Optional[List[Dict]] = None,
+        max_coin_amount: Optional[int] = None,
+        exclude_coin_amounts: Optional[List[int]] = None,
+    ) -> dict:
         """
         Selects coins in CAT Wallet for creating an offer using RPC.
 
@@ -559,16 +575,22 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
                 "min_coin_amount": min_coin_amount,
                 "excluded_coins": excluded_coins,
                 "max_coin_amount": max_coin_amount,
-                "exclude_coin_amounts": exclude_coin_amounts
+                "exclude_coin_amounts": exclude_coin_amounts,
             }
             result = self.__chia_rpc__.submit("select_coins", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
-    def take_offer(self, offer: str, fee: int, min_coin_amount: int = 0,
-                   max_coin_amount: Optional[int] = 0, solver: Optional[Dict] = None,
-                   reuse_puzhash: Optional[bool] = True) -> dict:
+    def take_offer(
+        self,
+        offer: str,
+        fee: int,
+        min_coin_amount: int = 0,
+        max_coin_amount: Optional[int] = 0,
+        solver: Optional[Dict] = None,
+        reuse_puzhash: Optional[bool] = True,
+    ) -> dict:
         """
         Takes an offer in CAT Wallet using RPC.
 
@@ -590,12 +612,12 @@ def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = 
                 "min_coin_amount": min_coin_amount,
                 "max_coin_amount": max_coin_amount,
                 "solver": solver,
-                "reuse_puzhash": reuse_puzhash
+                "reuse_puzhash": reuse_puzhash,
             }
             result = self.__chia_rpc__.submit("take_offer", json.dumps(data))
             return json.loads(result)
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
 
 class DidWallet:
@@ -627,15 +649,14 @@ class DidWallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'coin_name': coin_name,
-            'pubkey': pubkey,
-            'puzhash': puzhash
+            "wallet_id": wallet_id,
+            "coin_name": coin_name,
+            "pubkey": pubkey,
+            "puzhash": puzhash,
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_create_attest", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_create_attest", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -651,14 +672,10 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_create_backup_file",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_create_backup_file", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -674,13 +691,10 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'coin_id': coin_id
-        }
+        payload = {"coin_id": coin_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_find_lost_did", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_find_lost_did", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -696,14 +710,10 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_get_current_coin_info",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_get_current_coin_info", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -719,9 +729,7 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
         result = self.__chia_rpc__.submit("did_get_did", json.dumps(payload))
@@ -741,10 +749,7 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'coin_id': coin_id,
-            'latest': latest
-        }
+        payload = {"coin_id": coin_id, "latest": latest}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
         result = self.__chia_rpc__.submit("did_get_info", json.dumps(payload))
@@ -763,14 +768,12 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
         result = self.__chia_rpc__.submit(
-            "did_get_information_needed_for_recovery",
-            json.dumps(payload))
+            "did_get_information_needed_for_recovery", json.dumps(payload)
+        )
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -786,13 +789,10 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_get_metadata", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_get_metadata", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -808,13 +808,10 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_get_pubkey", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_get_pubkey", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -830,13 +827,10 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_get_recovery_list", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_get_recovery_list", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -852,19 +846,15 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_get_wallet_name", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_get_wallet_name", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def did_message_spend(
-            self, wallet_id, coin_announcements, puzzle_announcements):
+    def did_message_spend(self, wallet_id, coin_announcements, puzzle_announcements):
         """
         Spend a distributed identity (DID) message from a specific DID wallet.
 
@@ -878,14 +868,13 @@ class DidWallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'coin_announcements': coin_announcements,
-            'puzzle_announcements': puzzle_announcements
+            "wallet_id": wallet_id,
+            "coin_announcements": coin_announcements,
+            "puzzle_announcements": puzzle_announcements,
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_message_spend", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_message_spend", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -905,15 +894,14 @@ class DidWallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'attest_data': attest_data,
-            'pubkey': pubkey,
-            'puzhash': puzhash
+            "wallet_id": wallet_id,
+            "attest_data": attest_data,
+            "pubkey": pubkey,
+            "puzhash": puzhash,
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_recovery_spend", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_recovery_spend", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -930,20 +918,15 @@ class DidWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id,
-            'name': name
-        }
+        payload = {"wallet_id": wallet_id, "name": name}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_set_wallet_name", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_set_wallet_name", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def did_transfer_did(self, wallet_id, inner_address,
-                         fee, with_recovery_info, reuse_puzhash):
+    def did_transfer_did(self, wallet_id, inner_address, fee, with_recovery_info, reuse_puzhash):
         """
         Transfer a distributed identity (DID) wallet to another owner.
 
@@ -959,22 +942,20 @@ class DidWallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'inner_address': inner_address,
-            'fee': fee,
-            'with_recovery_info': with_recovery_info,
-            'reuse_puzhash': reuse_puzhash
+            "wallet_id": wallet_id,
+            "inner_address": inner_address,
+            "fee": fee,
+            "with_recovery_info": with_recovery_info,
+            "reuse_puzhash": reuse_puzhash,
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_transfer_did", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_transfer_did", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def did_update_metadata(self, wallet_id, metadata,
-                            fee=0, reuse_puzhash=True):
+    def did_update_metadata(self, wallet_id, metadata, fee=0, reuse_puzhash=True):
         """
         Update the metadata of a distributed identity (DID) wallet.
 
@@ -990,21 +971,21 @@ class DidWallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'metadata': metadata,
-            'fee': fee,
-            'reuse_puzhash': reuse_puzhash
+            "wallet_id": wallet_id,
+            "metadata": metadata,
+            "fee": fee,
+            "reuse_puzhash": reuse_puzhash,
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_update_metadata", json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_update_metadata", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
     def did_update_recovery_ids(
-            self, wallet_id, new_list, num_verifications_required=0, reuse_puzhash=True):
+        self, wallet_id, new_list, num_verifications_required=0, reuse_puzhash=True
+    ):
         """
         Update the recovery IDs for a distributed identity (DID) wallet.
 
@@ -1021,16 +1002,14 @@ class DidWallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'new_list': new_list,
-            'num_verifications_required': num_verifications_required,
-            'reuse_puzhash': reuse_puzhash
+            "wallet_id": wallet_id,
+            "new_list": new_list,
+            "num_verifications_required": num_verifications_required,
+            "reuse_puzhash": reuse_puzhash,
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "did_update_recovery_ids",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("did_update_recovery_ids", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1060,9 +1039,7 @@ class KeyManagement:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'mnemonic': mnemonic
-        }
+        payload = {"mnemonic": mnemonic}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
         result = self.__chia_rpc__.submit("add_key", json.dumps(payload))
@@ -1070,8 +1047,7 @@ class KeyManagement:
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def check_delete_key(
-            self, fingerprint: int) -> Dict[str, Union[str, bool]]:
+    def check_delete_key(self, fingerprint: int) -> Dict[str, Union[str, bool]]:
         """
         Determines if it is safe to delete a private key.
 
@@ -1083,13 +1059,10 @@ class KeyManagement:
                 the key is used for farming, pooling, or has a balance.
         """
         # Construct the request payload
-        payload = {
-            'fingerprint': fingerprint
-        }
+        payload = {"fingerprint": fingerprint}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "check_delete_key", json.dumps(payload))
+        result = self.__chia_rpc__.submit("check_delete_key", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1105,9 +1078,7 @@ class KeyManagement:
         payload = {}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "wallet_delete_all_keys",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("wallet_delete_all_keys", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1123,9 +1094,7 @@ class KeyManagement:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'fingerprint': fingerprint
-        }
+        payload = {"fingerprint": fingerprint}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
         result = self.__chia_rpc__.submit("delete_key", json.dumps(payload))
@@ -1174,13 +1143,10 @@ class KeyManagement:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'fingerprint': fingerprint
-        }
+        payload = {"fingerprint": fingerprint}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_private_key", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_private_key", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1197,8 +1163,7 @@ class KeyManagement:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call
-        result = self.__chia_rpc__.submit(
-            "get_public_keys", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_public_keys", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1214,9 +1179,7 @@ class KeyManagement:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'fingerprint': fingerprint
-        }
+        payload = {"fingerprint": fingerprint}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call
@@ -1225,8 +1188,9 @@ class KeyManagement:
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def verify_signature(self, pubkey: str, message: str,
-                         signature: str, address: str, signing_mode: str) -> dict:
+    def verify_signature(
+        self, pubkey: str, message: str, signature: str, address: str, signing_mode: str
+    ) -> dict:
         """
         Verifies if a signature is valid with the given public key, message, signature, address, and signing mode.
 
@@ -1242,17 +1206,16 @@ class KeyManagement:
         """
         # Construct the request payload
         payload = {
-            'pubkey': pubkey,
-            'message': message,
-            'signature': signature,
-            'address': address,
-            'signing_mode': signing_mode
+            "pubkey": pubkey,
+            "message": message,
+            "signature": signature,
+            "address": address,
+            "signing_mode": signing_mode,
         }
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call
-        result = self.__chia_rpc__.submit(
-            "verify_signature", json.dumps(payload))
+        result = self.__chia_rpc__.submit("verify_signature", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1283,21 +1246,23 @@ class PoolWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Define the payload for the RPC call
-        payload = {
-            "wallet_id": wallet_id,
-            "fee": fee
-        }
+        payload = {"wallet_id": wallet_id, "fee": fee}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "pw_absorb_rewards", json.dumps(payload))
+        result = self.__chia_rpc__.submit("pw_absorb_rewards", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def pw_join_pool(self, wallet_id: int, target_puzzlehash: str,
-                     pool___url: str, relative_lock_height: int, fee: int) -> dict:
+    def pw_join_pool(
+        self,
+        wallet_id: int,
+        target_puzzlehash: str,
+        pool___url: str,
+        relative_lock_height: int,
+        fee: int,
+    ) -> dict:
         """
         Joins the given wallet to a pool.
 
@@ -1317,7 +1282,7 @@ class PoolWallet:
             "target_puzzlehash": target_puzzlehash,
             "pool___url": pool___url,
             "relative_lock_height": relative_lock_height,
-            "fee": fee
+            "fee": fee,
         }
 
         # Use the submit method of WalletRpcClient instance to make the Chia
@@ -1339,10 +1304,7 @@ class PoolWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Define the payload for the RPC call
-        payload = {
-            "wallet_id": wallet_id,
-            "fee": fee
-        }
+        payload = {"wallet_id": wallet_id, "fee": fee}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
@@ -1362,9 +1324,7 @@ class PoolWallet:
             dict: A dictionary containing the result of the operation.
         """
         # Define the payload for the RPC call
-        payload = {
-            "wallet_id": wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
@@ -1398,14 +1358,11 @@ class Notifications:
             dict: A dictionary containing the result of the operation.
         """
         # Define the payload for the RPC call
-        payload = {
-            "ids": ids
-        }
+        payload = {"ids": ids}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "delete_notifications", json.dumps(payload))
+        result = self.__chia_rpc__.submit("delete_notifications", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1423,22 +1380,16 @@ class Notifications:
             dict: A dictionary containing the result of the operation.
         """
         # Define the payload for the RPC call
-        payload = {
-            "ids": ids,
-            "start": start,
-            "end": end
-        }
+        payload = {"ids": ids, "start": start, "end": end}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "get_notifications", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_notifications", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def send_notification(self, target: str, message: str,
-                          amount: int, fee: int) -> dict:
+    def send_notification(self, target: str, message: str, amount: int, fee: int) -> dict:
         """
         Sends a notification.
 
@@ -1452,23 +1403,16 @@ class Notifications:
             dict: A dictionary containing the result of the operation.
         """
         # Define the payload for the RPC call
-        payload = {
-            "target": target,
-            "message": message,
-            "amount": amount,
-            "fee": fee
-        }
+        payload = {"target": target, "message": message, "amount": amount, "fee": fee}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "send_notification", json.dumps(payload))
+        result = self.__chia_rpc__.submit("send_notification", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def sign_message_by_address(
-            self, address: str, message: str, is_hex: bool = False) -> dict:
+    def sign_message_by_address(self, address: str, message: str, is_hex: bool = False) -> dict:
         """
         Given a derived P2 address, sign the message by its private key.
 
@@ -1481,23 +1425,16 @@ class Notifications:
             dict: A dictionary containing the result of the operation.
         """
         # Define the payload for the RPC call
-        payload = {
-            "address": address,
-            "message": message,
-            "is_hex": is_hex
-        }
+        payload = {"address": address, "message": message, "is_hex": is_hex}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "sign_message_by_address",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("sign_message_by_address", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def sign_message_by_id(self, id: str, message: str,
-                           is_hex: bool = False) -> dict:
+    def sign_message_by_id(self, id: str, message: str, is_hex: bool = False) -> dict:
         """
         Given a NFT/DID ID, sign the message by the P2 private key.
 
@@ -1510,16 +1447,11 @@ class Notifications:
             dict: A dictionary containing the result of the operation.
         """
         # Define the payload for the RPC call
-        payload = {
-            "id": id,
-            "message": message,
-            "is_hex": is_hex
-        }
+        payload = {"id": id, "message": message, "is_hex": is_hex}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "sign_message_by_id", json.dumps(payload))
+        result = self.__chia_rpc__.submit("sign_message_by_id", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1538,8 +1470,19 @@ class Wallet:
         self.__cert__ = cert
         self.__chia_rpc__ = WalletRPC(url, cert)
 
-    def create_signed_transaction(self, wallet_id, additions, fee, coins, coin_announcements=None, puzzle_announcements=None,
-                                  min_coin_amount=0, max_coin_amount=0, excluded_coins=None, excluded_coin_amounts=None):
+    def create_signed_transaction(
+        self,
+        wallet_id,
+        additions,
+        fee,
+        coins,
+        coin_announcements=None,
+        puzzle_announcements=None,
+        min_coin_amount=0,
+        max_coin_amount=0,
+        excluded_coins=None,
+        excluded_coin_amounts=None,
+    ):
         """
         Create a signed transaction for sending Chia coins.
 
@@ -1568,22 +1511,20 @@ class Wallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'additions': additions,
-            'fee': fee,
-            'coins': coins,
-            'coin_announcements': coin_announcements,
-            'puzzle_announcements': puzzle_announcements,
-            'min_coin_amount': min_coin_amount,
-            'max_coin_amount': max_coin_amount,
-            'excluded_coins': excluded_coins,
-            'excluded_coin_amounts': excluded_coin_amounts
+            "wallet_id": wallet_id,
+            "additions": additions,
+            "fee": fee,
+            "coins": coins,
+            "coin_announcements": coin_announcements,
+            "puzzle_announcements": puzzle_announcements,
+            "min_coin_amount": min_coin_amount,
+            "max_coin_amount": max_coin_amount,
+            "excluded_coins": excluded_coins,
+            "excluded_coin_amounts": excluded_coin_amounts,
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "create_signed_transaction",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("create_signed_transaction", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1599,14 +1540,10 @@ class Wallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "delete_unconfirmed_transactions",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("delete_unconfirmed_transactions", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1622,14 +1559,10 @@ class Wallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'index': index
-        }
+        payload = {"index": index}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "extend_derivation_index",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("extend_derivation_index", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1642,8 +1575,7 @@ class Wallet:
             dict: A dictionary containing the result of the operation.
         """
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_current_derivation_index", json.dumps({}))
+        result = self.__chia_rpc__.submit("get_current_derivation_index", json.dumps({}))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1673,20 +1605,23 @@ class Wallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id,
-            'new_address': new_address
-        }
+        payload = {"wallet_id": wallet_id, "new_address": new_address}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_next_address", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_next_address", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def get_spendable_coins(self, wallet_id, min_coin_amount=0, max_coin_amount=0,
-                            excluded_coin_amounts=None, excluded_coins=None, excluded_coin_ids=None):
+    def get_spendable_coins(
+        self,
+        wallet_id,
+        min_coin_amount=0,
+        max_coin_amount=0,
+        excluded_coin_amounts=None,
+        excluded_coins=None,
+        excluded_coin_ids=None,
+    ):
         """
         Get the spendable coins for a specific wallet with optional filtering.
 
@@ -1705,17 +1640,16 @@ class Wallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'min_coin_amount': min_coin_amount,
-            'max_coin_amount': max_coin_amount,
-            'excluded_coin_amounts': excluded_coin_amounts or [],
-            'excluded_coins': excluded_coins or [],
-            'excluded_coin_ids': excluded_coin_ids or []
+            "wallet_id": wallet_id,
+            "min_coin_amount": min_coin_amount,
+            "max_coin_amount": max_coin_amount,
+            "excluded_coin_amounts": excluded_coin_amounts or [],
+            "excluded_coins": excluded_coins or [],
+            "excluded_coin_ids": excluded_coin_ids or [],
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_spendable_coins", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_spendable_coins", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1731,13 +1665,10 @@ class Wallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'transaction_id': transaction_id
-        }
+        payload = {"transaction_id": transaction_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_transaction", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_transaction", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1753,13 +1684,10 @@ class Wallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_transaction_count", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_transaction_count", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1773,13 +1701,10 @@ class Wallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'transaction_id': transaction_id
-        }
+        payload = {"transaction_id": transaction_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_transaction_memo", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_transaction_memo", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1800,16 +1725,15 @@ class Wallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'start': start,
-            'end': end,
-            'sort_key': sort_key,
-            'reverse': reverse
+            "wallet_id": wallet_id,
+            "start": start,
+            "end": end,
+            "sort_key": sort_key,
+            "reverse": reverse,
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_transactions", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_transactions", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1825,19 +1749,27 @@ class Wallet:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'wallet_id': wallet_id
-        }
+        payload = {"wallet_id": wallet_id}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_wallet_balance", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_wallet_balance", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def send_transaction(self, wallet_id, amount, address, fee, memos=None, min_coin_amount=0, max_coin_amount=0,
-                         exclude_coin_amounts=None, exclude_coin_ids=None, reuse_puzhash=True):
+    def send_transaction(
+        self,
+        wallet_id,
+        amount,
+        address,
+        fee,
+        memos=None,
+        min_coin_amount=0,
+        max_coin_amount=0,
+        exclude_coin_amounts=None,
+        exclude_coin_ids=None,
+        reuse_puzhash=True,
+    ):
         """
         Send a transaction from a specific wallet ID.
 
@@ -1859,27 +1791,33 @@ class Wallet:
         """
         # Construct the request payload
         payload = {
-            'wallet_id': wallet_id,
-            'amount': amount,
-            'address': address,
-            'fee': fee,
-            'memos': memos,
-            'min_coin_amount': min_coin_amount,
-            'max_coin_amount': max_coin_amount,
-            'exclude_coin_amounts': exclude_coin_amounts,
-            'exclude_coin_ids': exclude_coin_ids,
-            'reuse_puzhash': reuse_puzhash
+            "wallet_id": wallet_id,
+            "amount": amount,
+            "address": address,
+            "fee": fee,
+            "memos": memos,
+            "min_coin_amount": min_coin_amount,
+            "max_coin_amount": max_coin_amount,
+            "exclude_coin_amounts": exclude_coin_amounts,
+            "exclude_coin_ids": exclude_coin_ids,
+            "reuse_puzhash": reuse_puzhash,
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "send_transaction", json.dumps(payload))
+        result = self.__chia_rpc__.submit("send_transaction", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def send_transaction_multi(self, wallet_id, additions, fee=0,
-                               coins=None, coin_announcements=None, puzzle_announcements=None):
+    def send_transaction_multi(
+        self,
+        wallet_id,
+        additions,
+        fee=0,
+        coins=None,
+        coin_announcements=None,
+        puzzle_announcements=None,
+    ):
         """
         Send transactions to multiple recipients in a single transaction.
 
@@ -1899,22 +1837,21 @@ class Wallet:
         """
         # Construct the transaction object for send_transaction_multi
         payload = {
-            'wallet_id': wallet_id,  # Required
-            'additions': additions,  # Required
-            'fee': fee  # Required
+            "wallet_id": wallet_id,  # Required
+            "additions": additions,  # Required
+            "fee": fee,  # Required
         }
 
         # Include optional arguments only if they are not None
         if coins is not None:
-            payload['coins'] = coins
+            payload["coins"] = coins
         if coin_announcements is not None:
-            payload['coin_announcements'] = coin_announcements
+            payload["coin_announcements"] = coin_announcements
         if puzzle_announcements is not None:
-            payload['puzzle_announcements'] = puzzle_announcements
+            payload["puzzle_announcements"] = puzzle_announcements
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        response = self.__chia_rpc__.submit(
-            "send_transaction_multi", json.dumps(payload))
+        response = self.__chia_rpc__.submit("send_transaction_multi", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(response)
@@ -1933,8 +1870,15 @@ class WalletManagement:
         self.__cert__ = cert
         self.__chia_rpc__ = WalletRPC(url, cert)
 
-    def create_new_wallet(self, wallet_type: str, name: str, amount: float,
-                          fee: float, mode: str = "new", asset_id: str = None) -> dict:
+    def create_new_wallet(
+        self,
+        wallet_type: str,
+        name: str,
+        amount: float,
+        fee: float,
+        mode: str = "new",
+        asset_id: str = None,
+    ) -> dict:
         """
         Creates a new wallet.
 
@@ -1956,19 +1900,17 @@ class WalletManagement:
             "amount": amount,
             "fee": fee,
             "mode": mode,
-            "asset_id": asset_id
+            "asset_id": asset_id,
         }
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "create_new_wallet", json.dumps(payload))
+        result = self.__chia_rpc__.submit("create_new_wallet", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def get_wallets(self, wallet_type: int = 0,
-                    include_data: bool = True) -> dict:
+    def get_wallets(self, wallet_type: int = 0, include_data: bool = True) -> dict:
         """
         Retrieves all of the wallets on the node.
 
@@ -1980,10 +1922,7 @@ class WalletManagement:
             dict: A dictionary containing the result of the operation.
         """
         # Define the payload for the RPC call
-        payload = {
-            "type": wallet_type,
-            "include_data": include_data
-        }
+        payload = {"type": wallet_type, "include_data": include_data}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
@@ -2018,8 +1957,7 @@ class WalletNode:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "get_height_info", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_height_info", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -2036,8 +1974,7 @@ class WalletNode:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "get_network_info", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_network_info", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -2054,8 +1991,7 @@ class WalletNode:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "get_sync_status", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_sync_status", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -2075,9 +2011,7 @@ class WalletNode:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "get_timestamp_for_height",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_timestamp_for_height", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -2097,9 +2031,7 @@ class WalletNode:
         Returns:
             dict: A dictionary containing the payload for pushing multiple transactions.
         """
-        payload = {
-            "transactions": transactions
-        }
+        payload = {"transactions": transactions}
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
@@ -2123,9 +2055,7 @@ class WalletNode:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "set_wallet_resync_on_startup",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("set_wallet_resync_on_startup", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -2181,8 +2111,7 @@ class DataLayerWallet:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "dl_delete_mirror", json.dumps(payload))
+        result = self.__chia_rpc__.submit("dl_delete_mirror", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -2202,14 +2131,18 @@ class DataLayerWallet:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "dl_get_mirrors", json.dumps(payload))
+        result = self.__chia_rpc__.submit("dl_get_mirrors", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
 
-    def dl_history(self, launcher_id: str, min_generation: int,
-                   max_generation: int, num_results: int) -> dict:
+    def dl_history(
+        self,
+        launcher_id: str,
+        min_generation: int,
+        max_generation: int,
+        num_results: int,
+    ) -> dict:
         """
         Retrieves the singleton record for the latest singleton of a launcher ID using the Chia API.
 
@@ -2227,7 +2160,8 @@ class DataLayerWallet:
             "launcher_id": launcher_id,
             "min_generation": min_generation,
             "max_generation": max_generation,
-            "num_results": num_results}
+            "num_results": num_results,
+        }
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
@@ -2250,8 +2184,15 @@ class NFTWallet:
         self.__cert__ = cert
         self.__chia_rpc__ = WalletRPC(url, cert)
 
-    def nft_add_uri(self, wallet_id: int, uri: str, key: str,
-                    nft_coin_id: str, fee: int, reuse_puzhash: bool) -> dict:
+    def nft_add_uri(
+        self,
+        wallet_id: int,
+        uri: str,
+        key: str,
+        nft_coin_id: str,
+        fee: int,
+        reuse_puzhash: bool,
+    ) -> dict:
         """
         Adds a URI to an NFT using the Chia API.
 
@@ -2273,7 +2214,7 @@ class NFTWallet:
             "key": key,
             "nft_coin_id": nft_coin_id,
             "fee": fee,
-            "reuse_puzhash": reuse_puzhash
+            "reuse_puzhash": reuse_puzhash,
         }
 
         # Use the submit method of WalletRPCConnect instance to make the Chia
@@ -2282,9 +2223,6 @@ class NFTWallet:
 
         # Parse the JSON response and return the result
         return json.loads(result)
-
-
-
 
 
 class Coins:
@@ -2301,7 +2239,8 @@ class Coins:
         self.__chia_rpc__ = WalletRPC(url, cert)
 
     def get_coin_records_by_names(
-            self, names: list, start_height: int, end_height: int, include_spent_coins: bool) -> dict:
+        self, names: list, start_height: int, end_height: int, include_spent_coins: bool
+    ) -> dict:
         """
         Retrieves the coins for given coin IDs using the Chia API.
 
@@ -2319,13 +2258,12 @@ class Coins:
             "names": names,
             "start_height": start_height,
             "end_height": end_height,
-            "include_spent_coins": include_spent_coins}
+            "include_spent_coins": include_spent_coins,
+        }
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit(
-            "get_coin_records_by_names",
-            json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_coin_records_by_names", json.dumps(payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
