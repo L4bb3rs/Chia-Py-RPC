@@ -30,16 +30,15 @@ class SharedMethods:
             dict: A dictionary containing the result of the operation.
         """
         # Construct the request payload
-        payload = {
-            'node_id': node_id
-        }
+        try:
+            payload = {'node_id': node_id}
+            result = self.__chia_rpc__.submit("close_connection", json.dumps(payload))
+            
+            # Parse the JSON response and return the result
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-        # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "close_connection", json.dumps(payload))
-
-        # Parse the JSON response and return the result
-        return json.loads(result)
 
     def get_connections(self) -> dict:
         """
@@ -48,16 +47,17 @@ class SharedMethods:
         Returns:
             dict: A dictionary containing the list of connections.
         """
+        try:
+            # Prepare the payload as a dictionary
+            payload = {}
 
-        # Prepare the payload as a dictionary
-        payload = {}
+            # Use the submit method of ChiaRPC instance to make the Chia RPC call
+            result = self.__chia_rpc__.submit("get_connections", json.dumps(payload))
 
-        # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit(
-            "get_connections", json.dumps(payload))
-
-        # Parse the JSON response and return the result
-        return json.loads(result)
+            # Parse the JSON response and return the result
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
     def get_routes(self) -> dict:
         """
@@ -66,34 +66,38 @@ class SharedMethods:
         Returns:
             dict: A dictionary containing the list of routes/endpoints.
         """
+        try:
+            # Prepare the payload as a dictionary
+            payload = {}
 
-        # Prepare the payload as a dictionary
-        payload = {}
+            # Use the submit method of ChiaRPC instance to make the Chia RPC call
+            result = self.__chia_rpc__.submit("get_routes", json.dumps(payload))
 
-        # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        # without passing any parameters
-        result = self.__chia_rpc__.submit("get_routes", json.dumps(payload))
+            # Parse the JSON response and return the result
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-        # Parse the JSON response and return the result
-        return json.loads(result)
 
-    def check_healthz(self) -> dict:
-        """
-        Check the health status of the shared wallet service.
+        def check_healthz(self) -> dict:
+            """
+            Check the health status of the shared wallet service.
 
-        Returns:
-            dict: Parsed JSON response from the shared wallet service.
-        """
+            Returns:
+                dict: Parsed JSON response from the shared wallet service.
+            """
+            try:
+                # Prepare the payload as a dictionary
+                payload = {}
 
-        # Prepare the payload as a dictionary
-        payload = {}
+                # Use the submit method of ChiaRPC instance to make the Chia RPC call
+                result = self.__chia_rpc__.submit("healthz", json.dumps(payload))
 
-        # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        # without passing any parameters
-        result = self.__chia_rpc__.submit("healthz", json.dumps(payload))
+                # Parse the JSON response and return it
+                return json.loads(result)
+            except Exception as e:
+                return {'error': str(e)}
 
-        # Parse the JSON response and return it
-        return json.loads(result)
 
     def open_connection(self, ip: str, port: int) -> dict:
         """
@@ -106,20 +110,22 @@ class SharedMethods:
         Returns:
             dict: Parsed JSON response from the shared wallet service.
         """
-        # Prepare the payload as a dictionary
-        payload = {
-            "ip": ip,
-            "port": port
-        }
+        try:
+            # Prepare the payload as a dictionary
+            payload = {
+                "ip": ip,
+                "port": port
+            }
 
-        # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        # with the request data
-        result = self.__chia_rpc__.submit(
-            "open_connection", json.dumps(payload))
+            # Use the submit method of ChiaRPC instance to make the Chia RPC call
+            result = self.__chia_rpc__.submit("open_connection", json.dumps(payload))
 
-        # Parse the JSON response and return it
-        return json.loads(result)
-
+            # Parse the JSON response and return it
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
+    
+    
     def stop_node(self) -> dict:
         """
         Stop the Chia node.
@@ -127,15 +133,17 @@ class SharedMethods:
         Returns:
             dict: Parsed JSON response from the shared wallet service.
         """
-        # Prepare the payload as a dictionary
-        payload = {}
+        try:
+            # Prepare the payload as a dictionary
+            payload = {}
 
-        # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        # with the request data
-        result = self.__chia_rpc__.submit("stop_node", json.dumps(payload))
+            # Use the submit method of ChiaRPC instance to make the Chia RPC call
+            result = self.__chia_rpc__.submit("stop_node", json.dumps(payload))
 
-        # Parse the JSON response and return it
-        return json.loads(result)
+            # Parse the JSON response and return it
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
 
 class CatWallet:
@@ -148,169 +156,256 @@ class CatWallet:
         Initialize CatWallet instance.
 
         Args:
-            __url (str, optional): __URL for ChiaRPC. Defaults to https://localhost:9256/ unless specified.
-            __cert (str, optional): __Certificate for ChiaRPC. Default Ceritificates unless specified.
+            url (str, optional): URL for ChiaRPC. Defaults to None, will use https://localhost:9256/ unless specified.
+            cert (str, optional): Certificate for ChiaRPC. Defaults to None, will use default certificates unless specified.
         """
-        self.__url__ = url
-        self.__cert__ = cert
-        self.__chia_rpc__ = WalletRPC(url, cert)
+        try:
+            self.__url__ = url
+            self.__cert__ = cert
+            self.__chia_rpc__ = WalletRPC(url, cert)
+        except Exception as e:
+            print(f"Initialization error: {str(e)}")
 
-    def cancel_offers(self, batch_fee: int = 1, secure: bool = True,
-                      batch_size: int = 5, cancel_all: bool = False, asset_id: str = "xch") -> dict:
+    def cancel_offers(self, secure: bool, batch_fee: int = 0, batch_size: int = 5,
+                    cancel_all: bool = False, asset_id: str = "xch") -> dict:
         """
         Cancel offers category.
 
         Args:
-            batch_fee (int, optional): Batch fee. Defaults to 0.
-            secure (bool, optional): Secure flag. Defaults to True.
-            batch_size (int, optional): Batch size. Defaults to 5.
-            cancel_all (bool, optional): Cancel all flag. Defaults to False.
-            asset_id (str, optional): Asset ID. Defaults to "xch".
+            secure (bool): Set to true to cancel on the blockchain by spending the coin(s) being offered;
+                        set to false to cancel in the wallet only. This parameter is required.
+            batch_fee (int, optional): The fee, in mojos, to add to each batch cancellation. Defaults to 0.
+            batch_size (int, optional): The number of offers to cancel in each batch. Defaults to 5.
+            cancel_all (bool, optional): Set to true to cancel all offers for all assets. Defaults to False.
+            asset_id (str, optional): If cancel_all is false, then only cancel the specified type of asset. Defaults to "xch".
 
         Returns:
             dict: Response from the RPC.
         """
-        data = {
-            "batch_fee": batch_fee,
-            "secure": secure,
-            "batch_size": int(batch_size),
-            "cancel_all": cancel_all,
-            "asset_id": asset_id.lower()
-        }
-        result = self.__chia_rpc__.submit("cancel_offers", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {
+                "secure": secure,
+                "batch_fee": batch_fee,
+                "batch_size": batch_size,
+                "cancel_all": cancel_all,
+                "asset_id": asset_id.lower(),
+            }
+            result = self.__chia_rpc__.submit("cancel_offers", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
+        
 
     def cat_asset_id_to_name(self, asset_id: str) -> dict:
         """
-        Retrieve asset name by asset ID
+        Retrieve asset name by asset ID.
 
         Args:
-            asset_id (str): Asset ID
+            asset_id (str): The ID of the CAT whose name you would like to retrieve.
+                            This CAT must be listed in your DEFAULT_CATS, i.e., the CATs your wallet recognizes.
 
         Returns:
-            dict: Response from the RPC
+            dict: Response from the RPC.
         """
-        data = {"asset_id": asset_id}
-        result = self.__chia_rpc__.submit(
-            "cat_asset_id_to_name", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {"asset_id": asset_id}
+            result = self.__chia_rpc__.submit("cat_asset_id_to_name", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-    def cancel_offer(self, offer_id):
-        """Cancel a CAT Wallet offer by offer_id"""
-        data = {"offer_id": offer_id}
-        result = self.__chia_rpc__.submit("cancel_offer", json.dumps(data))
-        return json.loads(result)
-
-    def cat_get_asset_id(self, wallet_id):
-        """Get the asset_id for a given asset_name in CAT Wallet"""
-        data = {"wallet_id": wallet_id}
-        result = self.__chia_rpc__.submit("cat_get_asset_id", json.dumps(data))
-        return json.loads(result)
-
-    def cat_get_name(self, wallet_id):
-        """Get the asset_name for a given asset_id in CAT Wallet"""
-        data = {"wallet_id": wallet_id}
-        result = self.__chia_rpc__.submit("cat_get_name", json.dumps(data))
-        return json.loads(result)
-
-    def cat_set_name(self, wallet_id, name):
+    def cancel_offer(self, secure: bool, trade_id: str, fee: int = None) -> dict:
         """
-        Set the name for a given asset_id in CAT Wallet
+        Cancel an offer.
 
         Args:
-            wallet_id (int): Wallet ID
-            name (str): Asset name
+            secure (bool): Set to true to cancel on the blockchain by spending the coin(s) being offered;
+                        set to false to cancel in the wallet only. This parameter is required.
+            trade_id (str): The ID of the offer to cancel. This parameter is required.
+            fee (int, optional): An optional blockchain fee, in mojos.
 
         Returns:
-            dict: Response from the RPC
+            dict: Response from the RPC.
         """
-        data = {"wallet_id": wallet_id, "name": name}
-        result = self.__chia_rpc__.submit("cat_set_name", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {
+                "secure": secure,
+                "trade_id": trade_id,
+            }
+            if fee is not None:
+                data["fee"] = fee
 
-    def cat_spend(self, wallet_id, coins, amount, fee, inner_address, memos, min_coin_amount,
-                  max_coin_amount, exclude_coin_amounts, exclude_coin_ids, reuse_puzhash):
+            result = self.__chia_rpc__.submit("cancel_offer", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
+
+
+    def cat_get_asset_id(self, wallet_id: int) -> dict:
         """
-        Spends an amount from the given wallet
+        Retrieve the asset ID from a CAT wallet.
 
         Args:
-            wallet_id (int): Wallet ID
-            coins (list): List of coins to spend
-            amount (int): Amount to spend
-            fee (int): Fee to pay
-            inner_address (str): Inner address to spend to
-            memos (list): List of memos
-            min_coin_amount (int): Minimum coin amount
-            max_coin_amount (int): Maximum coin amount
-            exclude_coin_amounts (list): List of coin amounts to exclude
-            exclude_coin_ids (list): List of coin IDs to exclude
-            reuse_puzhash (bool): Reuse puzzle hash
+            wallet_id (int): The wallet ID of the CAT whose ID you would like to retrieve. This parameter is required.
 
         Returns:
-            dict: Response from the RPC
+            dict: Response from the RPC.
         """
-        data = {
-            "wallet_id": wallet_id,
-            "coins": coins,
-            "amount": amount,
-            "fee": fee,
-            "inner_address": inner_address,
-            "memos": memos,
-            "min_coin_amount": min_coin_amount,
-            "max_coin_amount": max_coin_amount,
-            "exclude_coin_amounts": exclude_coin_amounts,
-            "exclude_coin_ids": exclude_coin_ids,
-            "reuse_puzhash": reuse_puzhash
-        }
-        result = self.__chia_rpc__.submit("cat_spend", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {"wallet_id": wallet_id}
+            result = self.__chia_rpc__.submit("cat_get_asset_id", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-    def check_offer_validity(self, offer):
+
+    def cat_get_name(self, wallet_id: int) -> dict:
         """
-        Check the validity of an offer in CAT Wallet
+        Get the name of a CAT associated with a wallet ID.
 
         Args:
-            offer (str): Offer string
+            wallet_id (int): The wallet ID of the CAT whose name you would like to retrieve. This parameter is required.
 
         Returns:
-            dict: Response from the RPC
+            dict: Response from the RPC.
         """
-        data = {"offer": offer}
-        result = self.__chia_rpc__.submit(
-            "check_offer_validity", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {"wallet_id": wallet_id}
+            result = self.__chia_rpc__.submit("cat_get_name", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-    def create_offer_for_ids(self, offer, fee=None, validate_only=None, driver_dict=None,
-                            min_coin_amount=None, max_coin_amount=None, solver=None, reuse_puzhash=None,
-                            min_height=None, min_time=None, max_height=None, max_time=None):
+
+    def cat_set_name(self, wallet_id: int, name: str) -> dict:
         """
-        Create an offer for a given set of wallet id and amount pairs in CAT Wallet
+        Rename a CAT wallet.
 
         Args:
-            offer (dict): Offer dictionary
-            fee (int, optional): Fee amount. Default is 0.
-            validate_only (bool, optional): Whether to only validate the offer or not. Default is False.
-            driver_dict (dict, optional): Driver dictionary. Default is None.
-            min_coin_amount (int, optional): Minimum coin amount. Default is 0.
-            max_coin_amount (int, optional): Maximum coin amount. Default is 0.
-            solver (dict, optional): Solver dictionary. Default is None.
-            reuse_puzhash (bool, optional): Whether to reuse the puzzle hash or not. Default is False.
-            min_height (int, optional): Minimum block height. Default is None.
-            min_time (int, optional): Minimum UNIX timestamp. Default is None.
-            max_height (int, optional): Maximum block height. Default is None.
-            max_time (int, optional): Maximum UNIX timestamp. Default is None.
+            wallet_id (int): The ID of the wallet whose name you would like to change. This parameter is required.
+            name (str): The new name for the wallet. This parameter is required.
 
         Returns:
-            dict: Response from the RPC
+            dict: Response from the RPC.
         """
+        try:
+            data = {"wallet_id": wallet_id, "name": name}
+            result = self.__chia_rpc__.submit("cat_set_name", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
+
+
+    def cat_spend(self, wallet_id: str, inner_address: str, coins: list = None, 
+                amount: int = None, fee: int = None, memos: list = None, 
+                min_coin_amount: int = 0, max_coin_amount: int = 0, 
+                exclude_coin_amounts: list = None, exclude_coin_ids: list = None, 
+                reuse_puzhash: bool = False) -> dict:
+        """
+        Send CAT funds to another wallet.
+
+        Args:
+            wallet_id (str): The wallet ID for the origin of the transaction.
+            inner_address (str): The destination address.
+            coins (list, optional): A list of coins to include in the spend.
+            amount (int, optional): The number of mojos to send.
+            fee (int, optional): An optional blockchain fee, in mojos.
+            memos (list, optional): An optional array of memos to be sent with the transaction.
+            min_coin_amount (int, optional): The minimum coin amount to send. Defaults to 0.
+            max_coin_amount (int, optional): The maximum coin amount to send. Defaults to 0.
+            exclude_coin_amounts (list, optional): A list of coin amounts to exclude.
+            exclude_coin_ids (list, optional): A list of coin IDs to exclude.
+            reuse_puzhash (bool, optional): If true, will not generate a new puzzle hash / address for this transaction only.
+
+        Returns:
+            dict: Response from the RPC.
+        """
+        try:
+            data = {
+                "wallet_id": wallet_id,
+                "inner_address": inner_address,
+            }
+            if coins is not None:
+                data["coins"] = coins
+            if amount is not None:
+                data["amount"] = amount
+            if fee is not None:
+                data["fee"] = fee
+            if memos is not None:
+                data["memos"] = memos
+            if min_coin_amount != 0:
+                data["min_coin_amount"] = min_coin_amount
+            if max_coin_amount != 0:
+                data["max_coin_amount"] = max_coin_amount
+            if exclude_coin_amounts is not None:
+                data["exclude_coin_amounts"] = exclude_coin_amounts
+            if exclude_coin_ids is not None:
+                data["exclude_coin_ids"] = exclude_coin_ids
+            if reuse_puzhash:
+                data["reuse_puzhash"] = reuse_puzhash
+
+            result = self.__chia_rpc__.submit("cat_spend", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
+
+
+    def check_offer_validity(self, offer: str) -> dict:
+        """
+        Check if an offer is valid.
+
+        Args:
+            offer (str): The contents of the offer to check. This parameter is required.
+
+        Returns:
+            dict: Response from the RPC.
+        """
+        try:
+            data = {"offer": offer}
+            result = self.__chia_rpc__.submit("check_offer_validity", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
+
+
+def create_offer_for_ids(self, offer: str, driver_dict: dict = None, fee: int = None, 
+                         validate_only: bool = False, min_coin_amount: int = None, 
+                         max_coin_amount: int = None, solver: str = None, 
+                         reuse_puzhash: bool = False, min_height: int = None, 
+                         min_time: int = None, max_height: int = None, 
+                         max_time: int = None) -> dict:
+    """
+    Create a new offer.
+
+    Args:
+        offer (str): The offer to create. This parameter is required.
+        driver_dict (dict, optional): A dictionary of keys and values associated with the offer. Defaults to an empty dictionary.
+        fee (int, optional): An optional blockchain fee, in mojos.
+        validate_only (bool, optional): Only validate the offer instead of creating it. Defaults to False.
+        min_coin_amount (int, optional): The minimum coin amount to select for the offer.
+        max_coin_amount (int, optional): The maximum coin amount to select for the offer.
+        solver (str, optional): A marshalled solver.
+        reuse_puzhash (bool, optional): If true, will not generate a new puzzle hash / address for this transaction only.
+        min_height (int, optional): Minimum block height.
+        min_time (int, optional): Minimum UNIX timestamp.
+        max_height (int, optional): Maximum block height.
+        max_time (int, optional): Maximum UNIX timestamp.
+
+    Returns:
+        dict: Response from the RPC.
+    """
+    try:
+        if driver_dict is None:
+            driver_dict = {}
+
         data = {
             "offer": offer,
+            "driver_dict": driver_dict
         }
 
         optional_fields = {
             "fee": fee,
             "validate_only": validate_only,
-            "driver_dict": driver_dict,
             "min_coin_amount": min_coin_amount,
             "max_coin_amount": max_coin_amount,
             "solver": solver,
@@ -327,140 +422,180 @@ class CatWallet:
 
         result = self.__chia_rpc__.submit("create_offer_for_ids", json.dumps(data))
         return json.loads(result)
+    except Exception as e:
+        return {'error': str(e)}
 
-    def get_all_offers(self, start=0, end=10, exclude_my_offers=False, exclude_taken_offers=True,
-                    include_completed=True, reverse=False, file_contents=True, sort_key=None):
+
+    def get_all_offers(self, start: Optional[int] = None, end: Optional[int] = None, 
+                    exclude_my_offers: Optional[bool] = None, exclude_taken_offers: Optional[bool] = None, 
+                    include_completed: Optional[bool] = None, reverse: Optional[bool] = None, 
+                    file_contents: Optional[bool] = None, sort_key: Optional[str] = None) -> dict:
         """
+        Show the details of all offers for this wallet.
 
         Args:
-            start (int): Start index for offers
-            end (int): End index for offers
-            exclude_my_offers (bool): Whether to exclude the user's own offers or not
-            exclude_taken_offers (bool): Whether to exclude taken offers or not
-            include_completed (bool): Whether to include completed offers or not
-            sort_key (str, optional): Sort key for offers. If None, it's excluded from the call.
-            reverse (bool): Whether to sort in reverse order or not
-            file_contents (bool): Whether to include file contents or not
+            start (int, optional): The sequence number of the first offer to show. If None, it's excluded from the call.
+            end (int, optional): The sequence number of the last offer to show. If None, it's excluded from the call.
+            exclude_my_offers (bool, optional): Set to true to exclude offers you originated. If None, it's excluded from the call.
+            exclude_taken_offers (bool, optional): Set to true to exclude offers that have already been taken. If None, it's excluded from the call.
+            include_completed (bool, optional): Set to true to include offers that have been taken. If None, it's excluded from the call.
+            reverse (bool, optional): Set to true to sort the results in reverse order. If None, it's excluded from the call.
+            file_contents (bool, optional): Set to true to display the contents of each offer. If None, it's excluded from the call.
+            sort_key (str, optional): Specify the key for sorting. If None, it's excluded from the call.
 
         Returns:
-            dict: Response from the RPC
+            dict: Response from the RPC.
         """
-        data = {
-            "start": start,
-            "end": end,
-            "exclude_my_offers": exclude_my_offers,
-            "exclude_taken_offers": exclude_taken_offers,
-            "include_completed": include_completed,
-            "reverse": reverse,
-            "file_contents": file_contents
-        }
+        try:
+            data = {}
 
-        if sort_key is not None:
-            data["sort_key"] = sort_key
+            optional_fields = {
+                "start": start,
+                "end": end,
+                "exclude_my_offers": exclude_my_offers,
+                "exclude_taken_offers": exclude_taken_offers,
+                "include_completed": include_completed,
+                "reverse": reverse,
+                "file_contents": file_contents,
+                "sort_key": sort_key
+            }
 
-        result = self.__chia_rpc__.submit("get_all_offers", json.dumps(data))
-        return json.loads(result)
+            for key, value in optional_fields.items():
+                if value is not None:
+                    data[key] = value
 
-    def get_offer(self, trade_id, file_contents=True):
-        """Retrieves an offer by trade_id in CAT Wallet.
+            result = self.__chia_rpc__.submit("get_all_offers", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
+
+
+
+    def get_offer(self, trade_id: str, file_contents: Optional[bool] = True) -> dict:
+        """
+        Retrieves an offer by trade_id in CAT Wallet.
 
         Args:
-            trade_id (str): Trade ID of the offer to retrieve
+            trade_id (str): Trade ID of the offer to retrieve. This parameter is required.
             file_contents (bool, optional): Whether to include file contents or not. Defaults to True.
 
         Returns:
-            dict: Response from the RPC
+            dict: Response from the RPC.
         """
-        data = {"trade_id": trade_id, "file_contents": file_contents}
-        result = self.__chia_rpc__.submit("get_offer", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {"trade_id": trade_id, "file_contents": file_contents}
+            result = self.__chia_rpc__.submit("get_offer", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-    def get_offer_summary(self, offer, advanced=False):
-        """Retrieves a summary of an offer in CAT Wallet.
+    def get_offer_summary(self, offer: str, advanced: Optional[bool] = False) -> dict:
+        """
+        Retrieves a summary of an offer in CAT Wallet.
 
         Args:
-            offer (str): Offer ID or Trade ID of the offer to retrieve
+            offer (str): Offer ID or Trade ID of the offer to retrieve. This parameter is required.
             advanced (bool, optional): Whether to include advanced details in the summary. Defaults to False.
 
         Returns:
-            dict: Response from the RPC
+            dict: Response from the RPC.
         """
-        data = {"offer": offer, "advanced": advanced}
-        result = self.__chia_rpc__.submit(
-            "get_offer_summary", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {"offer": offer, "advanced": advanced}
+            result = self.__chia_rpc__.submit("get_offer_summary", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-    def get_offers_count(self):
-        """Retrieves the count of all offers in CAT Wallet.
+    def get_offers_count(self) -> dict:
+        """
+        Retrieves the count of all offers in CAT Wallet.
 
         Returns:
-            dict: Response from the RPC
+            dict: Response from the RPC.
         """
-        data = {}
-        result = self.__chia_rpc__.submit("get_offers_count", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {}
+            result = self.__chia_rpc__.submit("get_offers_count", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-    def get_stray_cats(self):
-        """Get a list of all unacknowledged CATs.
+    def get_stray_cats(self) -> dict:
+        """
+        Get a list of all unacknowledged CATs.
 
         Returns:
-            dict: Response from the RPC call
+            dict: Response from the RPC call.
         """
-        data = {}
-        result = self.__chia_rpc__.submit("get_stray_cats", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {}
+            result = self.__chia_rpc__.submit("get_stray_cats", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-    def select_coins(self, wallet_id, amount, min_coin_amount,
-                     excluded_coins=None, max_coin_amount=None, exclude_coin_amounts=None):
-        """Selects coins in CAT Wallet for creating an offer using RPC.
+    def select_coins(self, wallet_id: int, amount: int, min_coin_amount: int,
+                     excluded_coins: Optional[List[Dict]] = None, max_coin_amount: Optional[int] = None,
+                     exclude_coin_amounts: Optional[List[int]] = None) -> dict:
+        """
+        Selects coins in CAT Wallet for creating an offer using RPC.
 
         Args:
-            wallet_id (int): ID of the wallet from which to select coins
-            amount (int): Amount of coins to select
-            min_coin_amount (int): Minimum amount of coins to select
-            excluded_coins (list): List of dictionaries containing excluded coin details
-            max_coin_amount (int): Maximum amount of coins to select (default: None)
-            exclude_coin_amounts (list): List of coin amounts to exclude from selection (default: None)
+            wallet_id (int): ID of the wallet from which to select coins. This parameter is required.
+            amount (int): Amount of coins to select. This parameter is required.
+            min_coin_amount (int): Minimum amount of coins to select. This parameter is required.
+            excluded_coins (List[Dict], optional): List of dictionaries containing excluded coin details.
+            max_coin_amount (int, optional): Maximum amount of coins to select.
+            exclude_coin_amounts (List[int], optional): List of coin amounts to exclude from selection.
 
         Returns:
-            dict: Response from the RPC call
+            dict: Response from the RPC call.
         """
-        data = {
-            "wallet_id": wallet_id,
-            "amount": amount,
-            "min_coin_amount": min_coin_amount,
-            "excluded_coins": excluded_coins,
-            "max_coin_amount": max_coin_amount,
-            "exclude_coin_amounts": exclude_coin_amounts
-        }
-        result = self.__chia_rpc__.submit("select_coins", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {
+                "wallet_id": wallet_id,
+                "amount": amount,
+                "min_coin_amount": min_coin_amount,
+                "excluded_coins": excluded_coins,
+                "max_coin_amount": max_coin_amount,
+                "exclude_coin_amounts": exclude_coin_amounts
+            }
+            result = self.__chia_rpc__.submit("select_coins", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
-    def take_offer(self, offer, fee, min_coin_amount=0,
-                   max_coin_amount=0, solver=None, reuse_puzhash=True):
-        """Takes an offer in CAT Wallet using RPC.
+    def take_offer(self, offer: str, fee: int, min_coin_amount: int = 0,
+                   max_coin_amount: Optional[int] = 0, solver: Optional[Dict] = None,
+                   reuse_puzhash: Optional[bool] = True) -> dict:
+        """
+        Takes an offer in CAT Wallet using RPC.
 
         Args:
-            offer (str): Trade ID of the offer to take
-            fee (int): Fee to offer in addition to the original offer
-            min_coin_amount (int): Minimum amount of coins to use for solving the puzzle
-            max_coin_amount (int): Maximum amount of coins to use for solving the puzzle (default: None)
-            solver (dict): Dictionary containing solver options (default: None)
-            reuse_puzhash (bool): Whether to reuse the puzzle hash from the original offer (default: True)
+            offer (str): Trade ID of the offer to take. This parameter is required.
+            fee (int): Fee to offer in addition to the original offer. This parameter is required.
+            min_coin_amount (int, optional): Minimum amount of coins to use for solving the puzzle. Defaults to 0.
+            max_coin_amount (int, optional): Maximum amount of coins to use for solving the puzzle.
+            solver (Dict, optional): Dictionary containing solver options.
+            reuse_puzhash (bool, optional): Whether to reuse the puzzle hash from the original offer. Defaults to True.
 
         Returns:
-            dict: Response from the RPC call
+            dict: Response from the RPC call.
         """
-        data = {
-            "offer": offer,
-            "fee": fee,
-            "min_coin_amount": min_coin_amount,
-            "max_coin_amount": max_coin_amount,
-            "solver": solver,
-            "reuse_puzhash": reuse_puzhash
-        }
-        result = self.__chia_rpc__.submit("take_offer", json.dumps(data))
-        return json.loads(result)
+        try:
+            data = {
+                "offer": offer,
+                "fee": fee,
+                "min_coin_amount": min_coin_amount,
+                "max_coin_amount": max_coin_amount,
+                "solver": solver,
+                "reuse_puzhash": reuse_puzhash
+            }
+            result = self.__chia_rpc__.submit("take_offer", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {'error': str(e)}
 
 
 class DidWallet:
