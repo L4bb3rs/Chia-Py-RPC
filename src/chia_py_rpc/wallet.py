@@ -173,9 +173,9 @@ class CatWallet:
         data = {
             "batch_fee": batch_fee,
             "secure": secure,
-            "batch_size": batch_size,
+            "batch_size": int(batch_size),
             "cancel_all": cancel_all,
-            "asset_id": asset_id.lower(),
+            "asset_id": asset_id.lower()
         }
         result = self.__chia_rpc__.submit("cancel_offers", json.dumps(data))
         return json.loads(result)
@@ -1023,7 +1023,7 @@ class KeyManagement:
 
         # Use the submit method of WalletRpcClient instance to make the Chia
         # RPC call with the payload
-        result = self.__chia_rpc__.submit("get_logged_in_fingerprint", json.dumps(payload))
+        result = self.__chia_rpc__.submit("get_logged_in_fingerprint", payload)
 
         # Parse the JSON response and return the result
         return json.loads(result)
