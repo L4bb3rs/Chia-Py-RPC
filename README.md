@@ -35,12 +35,9 @@ additions = [
     {'amount': 500000000000, 'puzzle_hash': '0x...'},  # Recipient 2
 ]
 fee = 0.00001
-coins = None
-coin_announcements = None
-puzzle_announcements = None
 
 # Call the send_transaction_multi method to send the transaction
-result = chia_wallet.send_transaction_multi(wallet_id, additions, fee, coins, coin_announcements, puzzle_announcements)
+result = chia_wallet.send_transaction_multi(wallet_id, additions, fee)
 
 # Parse the result and handle the transaction ID and status
 transaction_id = result['transaction_id']

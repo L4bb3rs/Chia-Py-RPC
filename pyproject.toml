@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "chia_py_rpc"
-version = "0.0.7"
+version = "0.1.0"
 authors = [
   { name="L4bb3rs", email="king@the300.net" },
 ]
@@ -15,6 +15,11 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+]
+
+dependencies = [
+  "Requests>=2.31.0",
+  "urllib3>=2.0.7",
 ]
 
 [project.urls]
