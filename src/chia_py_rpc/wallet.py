@@ -1,6 +1,6 @@
 import json
 from chia_py_rpc.rpc_connect import WalletRPCConnect as WalletRPC
-from typing import Dict, Union, List
+from typing import Dict, Union, List, Optional
 
 
 class SharedMethods:
@@ -368,68 +368,68 @@ class CatWallet:
             return {"error": str(e)}
 
 
-def create_offer_for_ids(
-    self,
-    offer: str,
-    driver_dict: dict = None,
-    fee: int = None,
-    validate_only: bool = False,
-    min_coin_amount: int = None,
-    max_coin_amount: int = None,
-    solver: str = None,
-    reuse_puzhash: bool = False,
-    min_height: int = None,
-    min_time: int = None,
-    max_height: int = None,
-    max_time: int = None,
-) -> dict:
-    """
-    Create a new offer.
+    def create_offer_for_ids(
+        self,
+        offer: str,
+        driver_dict: dict = None,
+        fee: int = None,
+        validate_only: bool = False,
+        min_coin_amount: int = None,
+        max_coin_amount: int = None,
+        solver: str = None,
+        reuse_puzhash: bool = False,
+        min_height: int = None,
+        min_time: int = None,
+        max_height: int = None,
+        max_time: int = None,
+    ) -> dict:
+        """
+        Create a new offer.
 
-    Args:
-        offer (str): The offer to create. This parameter is required.
-        driver_dict (dict, optional): A dictionary of keys and values associated with the offer. Defaults to an empty dictionary.
-        fee (int, optional): An optional blockchain fee, in mojos.
-        validate_only (bool, optional): Only validate the offer instead of creating it. Defaults to False.
-        min_coin_amount (int, optional): The minimum coin amount to select for the offer.
-        max_coin_amount (int, optional): The maximum coin amount to select for the offer.
-        solver (str, optional): A marshalled solver.
-        reuse_puzhash (bool, optional): If true, will not generate a new puzzle hash / address for this transaction only.
-        min_height (int, optional): Minimum block height.
-        min_time (int, optional): Minimum UNIX timestamp.
-        max_height (int, optional): Maximum block height.
-        max_time (int, optional): Maximum UNIX timestamp.
+        Args:
+            offer (str): The offer to create. This parameter is required.
+            driver_dict (dict, optional): A dictionary of keys and values associated with the offer. Defaults to an empty dictionary.
+            fee (int, optional): An optional blockchain fee, in mojos.
+            validate_only (bool, optional): Only validate the offer instead of creating it. Defaults to False.
+            min_coin_amount (int, optional): The minimum coin amount to select for the offer.
+            max_coin_amount (int, optional): The maximum coin amount to select for the offer.
+            solver (str, optional): A marshalled solver.
+            reuse_puzhash (bool, optional): If true, will not generate a new puzzle hash / address for this transaction only.
+            min_height (int, optional): Minimum block height.
+            min_time (int, optional): Minimum UNIX timestamp.
+            max_height (int, optional): Maximum block height.
+            max_time (int, optional): Maximum UNIX timestamp.
 
-    Returns:
-        dict: Response from the RPC.
-    """
-    try:
-        if driver_dict is None:
-            driver_dict = {}
+        Returns:
+            dict: Response from the RPC.
+        """
+        try:
+            if driver_dict is None:
+                driver_dict = {}
 
-        data = {"offer": offer, "driver_dict": driver_dict}
+            data = {"offer": offer, "driver_dict": driver_dict}
 
-        optional_fields = {
-            "fee": fee,
-            "validate_only": validate_only,
-            "min_coin_amount": min_coin_amount,
-            "max_coin_amount": max_coin_amount,
-            "solver": solver,
-            "reuse_puzhash": reuse_puzhash,
-            "min_height": min_height,
-            "min_time": min_time,
-            "max_height": max_height,
-            "max_time": max_time,
-        }
+            optional_fields = {
+                "fee": fee,
+                "validate_only": validate_only,
+                "min_coin_amount": min_coin_amount,
+                "max_coin_amount": max_coin_amount,
+                "solver": solver,
+                "reuse_puzhash": reuse_puzhash,
+                "min_height": min_height,
+                "min_time": min_time,
+                "max_height": max_height,
+                "max_time": max_time,
+            }
 
-        for key, value in optional_fields.items():
-            if value is not None:
-                data[key] = value
+            for key, value in optional_fields.items():
+                if value is not None:
+                    data[key] = value
 
-        result = self.__chia_rpc__.submit("create_offer_for_ids", json.dumps(data))
-        return json.loads(result)
-    except Exception as e:
-        return {"error": str(e)}
+            result = self.__chia_rpc__.submit("create_offer_for_ids", json.dumps(data))
+            return json.loads(result)
+        except Exception as e:
+            return {"error": str(e)}
 
     def get_all_offers(
         self,
