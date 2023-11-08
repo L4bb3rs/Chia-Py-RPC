@@ -459,8 +459,6 @@ class CatWallet:
             dict: Response from the RPC.
         """
         try:
-            data = {}
-
             optional_fields = {
                 "start": start,
                 "end": end,
@@ -472,10 +470,11 @@ class CatWallet:
                 "sort_key": sort_key,
             }
 
-            for key, value in optional_fields.items():
-                if value is not None:
-                    data[key] = value
-
+            data = {
+                key: value
+                for key, value in optional_fields.items()
+                if value is not None
+            }
             result = self.__chia_rpc__.submit("get_all_offers", json.dumps(data))
             return json.loads(result)
         except Exception as e:
