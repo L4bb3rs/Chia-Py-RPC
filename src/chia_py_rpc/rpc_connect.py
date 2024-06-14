@@ -14,10 +14,9 @@ class WalletRPCConnect:
     receiving JSON responses.
 
     Usage:
-        >>> wallet_rpc = WalletRPCConnect(url='https://localhost:9256/',
+        wallet_rpc = WalletRPCConnect(url='https://localhost:9256/',
                                         cert=('path/to/cert', 'path/to/key'))
-        >>> response = wallet_rpc.submit('get_wallet_balance', '{}')
-        >>> print(response)
+        response = wallet_rpc.submit('get_wallet_balance', '{}')
 
     Attributes:
         url (str): URL of the Chia RPC service.
@@ -35,7 +34,9 @@ class WalletRPCConnect:
                 str: JSON response as a string with indentation and sorted keys.
     """
 
-    def __init__(self, url: Optional[str] = None, cert: Optional[Tuple[str, str]] = None):
+    def __init__(
+        self, url: Optional[str] = None, cert: Optional[Tuple[str, str]] = None
+    ):
         """
         Initialize ChiaRPC instance with the provided URL and certificate.
 
@@ -45,8 +46,12 @@ class WalletRPCConnect:
         """
         default_url = "https://localhost:9256/"
         default_cert = (
-            os.path.expanduser("~/.chia/mainnet/config/ssl/full_node/private_full_node.crt"),
-            os.path.expanduser("~/.chia/mainnet/config/ssl/full_node/private_full_node.key"),
+            os.path.expanduser(
+                "~/.chia/mainnet/config/ssl/full_node/private_full_node.crt"
+            ),
+            os.path.expanduser(
+                "~/.chia/mainnet/config/ssl/full_node/private_full_node.key"
+            ),
         )
 
         self.url = url or default_url
