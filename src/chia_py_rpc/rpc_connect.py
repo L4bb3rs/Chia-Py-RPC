@@ -35,8 +35,8 @@ class WalletRPCConnect:
     """
 
     def __init__(
-        self, url: Optional[str] = None, cert: Optional[Tuple[str, str]] = None
-    ):
+        self, url: Optional[str] = None, cert: Optional[Tuple[str, str]] = None, disable_warnings: bool = True
+    ) -> None:
         """
         Initialize ChiaRPC instance with the provided URL and certificate.
 
@@ -57,9 +57,10 @@ class WalletRPCConnect:
         self.url = url or default_url
         self.cert = cert or default_cert
         self.headers = {"Content-Type": "application/json"}
-        urllib3.disable_warnings()
+        if disable_warnings:
+            urllib3.disable_warnings()
 
-    def submit(self, chia_call: str, data: str):
+    def submit(self, chia_call: str, data: str) -> str:
         """
         Submit data to the specified URL.
 

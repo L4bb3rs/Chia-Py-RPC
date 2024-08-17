@@ -1,14 +1,15 @@
 import json
+
 from chia_py_rpc.rpc_connect import WalletRPCConnect as WalletRPC
-from typing import Dict, Union, List, Optional
+from typing import Dict, Tuple, Union, List, Optional
 
 
 class SharedMethods:
     """Methods shared by all services."""
 
     def __init__(
-        self, url: str = None, cert: str = None, disable_warnings: bool = False
-    ):
+        self, url: Optional[str] = None, cert: Optional[Tuple[str, str]] = None, disable_warnings: bool = False
+    ) -> None:
         """
         Initialize SharedMethods instance.
 
@@ -19,7 +20,7 @@ class SharedMethods:
         """
         self.__url__ = url
         self.__cert__ = cert
-        self.__chia_rpc__ = WalletRPC(url, cert, disable_warnings)
+        self.__chia_rpc__ = WalletRPC(url=url, cert=cert, disable_warnings=disable_warnings)
 
     def close_connection(self, node_id: str) -> dict:
         """
@@ -877,10 +878,10 @@ class DidWallet:
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit("did_message_spend", json.dumps(payload))
+        result = self.__chia_rpc__.submit(chia_call="did_message_spend", data=json.dumps(obj=payload))
 
         # Parse the JSON response and return the result
-        return json.loads(result)
+        return json.loads(s=result)
 
     def did_recovery_spend(self, wallet_id, attest_data, pubkey, puzhash):
         """
@@ -904,7 +905,7 @@ class DidWallet:
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit("did_recovery_spend", json.dumps(payload))
+        result = self.__chia_rpc__.submit(chia_call="did_recovery_spend", data=json.dumps(obj=payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -924,10 +925,10 @@ class DidWallet:
         payload = {"wallet_id": wallet_id, "name": name}
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit("did_set_wallet_name", json.dumps(payload))
+        result = self.__chia_rpc__.submit(chia_call="did_set_wallet_name", data=json.dumps(obj=payload))
 
         # Parse the JSON response and return the result
-        return json.loads(result)
+        return json.loads(s=result)
 
     def did_transfer_did(
         self, wallet_id, inner_address, fee, with_recovery_info, reuse_puzhash
@@ -955,10 +956,10 @@ class DidWallet:
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit("did_transfer_did", json.dumps(payload))
+        result = self.__chia_rpc__.submit(chia_call="did_transfer_did", data=json.dumps(obj=payload))
 
         # Parse the JSON response and return the result
-        return json.loads(result)
+        return json.loads(s=result)
 
     def did_update_metadata(self, wallet_id, metadata, fee=0, reuse_puzhash=True):
         """
@@ -983,7 +984,7 @@ class DidWallet:
         }
 
         # Use the submit method of ChiaRPC instance to make the Chia RPC call
-        result = self.__chia_rpc__.submit("did_update_metadata", json.dumps(payload))
+        result = self.__chia_rpc__.submit(chia_call="did_update_metadata", data=json.dumps(obj=payload))
 
         # Parse the JSON response and return the result
         return json.loads(result)
@@ -1023,7 +1024,7 @@ class DidWallet:
 
 
 class KeyManagement:
-    def __init__(self, url: str = None, cert: str = None):
+    def __init__(self, url: Optional[str] = None, cert = None) -> None:
         """
         Initialize KeyManagement instance.
 
